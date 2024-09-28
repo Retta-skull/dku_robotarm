@@ -1,0 +1,167 @@
+<?xml version="1.0" ?>
+<robot name="robotarm">
+
+  <material name="green">
+    <color rgba="0 0.6 0 1" />
+  </material>
+  <material name="orange">
+    <color rgba="1.0 0.4 0.0 1.0"/>
+  </material>
+
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="1.0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://robotarm/meshes/base_link.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://robotarm/meshes/base_link.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link1">
+    <inertial>
+      <origin xyz="0.03 -0.01 -0.54" rpy="0.0 0.0 0.0"/>
+      <mass value="1.0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.03 -0.01 -0.54" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://robotarm/meshes/link1.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+    <collision>
+      <origin xyz="0.03 -0.01 -0.54" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://robotarm/meshes/link1.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link2">
+    <inertial>
+      <origin xyz="-0.01 0.28 -0.01" rpy="0.0 0.0 0.0"/>
+      <mass value="1.0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.01 0.28 -0.01" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://robotarm/meshes/link2.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.01 0.28 -0.01" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://robotarm/meshes/link2.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link3">
+    <inertial>
+      <origin xyz="-0.02 -0.27 -0.19" rpy="0.0 0.0 0.0"/>
+      <mass value="1.0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.02 -0.27 -0.19" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://robotarm/meshes/link3.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.02 -0.27 -0.19" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://robotarm/meshes/link3.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link4">
+    <inertial>
+      <origin xyz="0.12 -0.3 -0.18" rpy="0.0 0.0 0.0"/>
+      <mass value="1.0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.12 -0.3 -0.18" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://robotarm/meshes/link4.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <origin xyz="0.12 -0.3 -0.18" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://robotarm/meshes/link4.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="end_effector">
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="base_joint" type="revolute">
+    <origin xyz="0.02 -0.07 0.94" rpy="0.0 0.0 0.0"/>
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.57" upper="1.57" effort="0.92" velocity="5.24"/>
+  </joint>
+
+  <joint name="link1_link2" type="revolute">
+    <origin xyz="0.028 -0.28 0.16" rpy="0.0 0.0 0.0"/>
+    <parent link="link1"/>
+    <child link="link2"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <limit lower="-1.57" upper="1.57" effort="0.92" velocity="5.24"/>
+  </joint>
+
+  <joint name="link2_link3" type="revolute">
+    <origin xyz="0 0.5 1.02" rpy="0.0 0.0 0.0"/>
+    <parent link="link2"/>
+    <child link="link3"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <limit lower="-1.57" upper="1.57" effort="0.92" velocity="5.24"/>
+  </joint>
+
+
+  <joint name="link3_link4" type="revolute">
+    <origin xyz="0.05 0.0 0.96" rpy="0.0 0.0 0.0"/>
+    <parent link="link3"/>
+    <child link="link4"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <limit lower="-1.57" upper="1.57" effort="0.92" velocity="5.24"/>
+  </joint>
+
+
+  <joint name="link4_end_effector" type="revolute">
+    <origin xyz="0.1 -0.17 1.5" rpy="0.0 0.0 0.0"/>
+    <parent link="link4"/>
+    <child link="end_effector"/>
+    <axis xyz="0 0 1.0"/>
+    <limit lower="-1.57" upper="1.57" effort="0.92" velocity="5.24"/>
+  </joint>
+
+</robot>

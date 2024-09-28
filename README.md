@@ -1,7 +1,5 @@
 # RobotArm ROS2 패키지
 
-![RobotArm 로고](path_to_logo_image) <!-- 선택 사항: 로봇 팔의 로고나 이미지 추가 -->
-
 ## 목차
 
 - [소개](#소개)
@@ -125,33 +123,44 @@ ros2 run robotarm Interface.py
 ## 노드 개요
 
 ## 1. XYZ Publisher (xyz_publisher.py)
+
 기능: 사용자로부터 목표 XYZ 좌표를 입력받아 /target_position 토픽으로 퍼블리시.
+
 메시지 타입: geometry_msgs/Point 또는 std_msgs/Float32MultiArray (구현에 따라 다름).
 
 ## 2. Angle Setter (angle_setter.py)
+
 기능: /target_position을 구독하여 역기구학을 계산하고, /joint_angles로 조인트 각도를 퍼블리시.
+
 메시지 타입: std_msgs/Float32MultiArray
 
 ## 3. Marker Publisher (marker_publisher.py)
+
 기능: /target_position을 구독하여 RViz에서 목표 위치를 마커로 시각화.
+
 메시지 타입: visualization_msgs/Marker
 
 ## 4. Joint State Publisher (JointStatePublisher.py)
+
 기능: 모든 조인트의 현재 상태를 /joint_states 토픽으로 퍼블리시.
+
 메시지 타입: sensor_msgs/JointState
 
 ## 5. Application RobotArm (ApplicationRobotarm.py)
+
 기능: 조인트의 상태를 실제 로봇팔에 적용.
 
 
 ## 구성
 
 ### URDF 파일
+
 위치: urdf/robotarm.urdf
 설명: 로봇의 물리적 설명을 포함하며, 링크와 조인트에 대한 정보를 담고 있습니다.
 사용법: robot_state_publisher 노드에서 로봇을 시각화하고, 역기구학 계산에 사용됩니다.
 
 ### RViz 설정
+
 위치: rviz/robotarm.rviz
 설명: 로봇 모델, 조인트 상태, 마커 등을 시각화하기 위한 사전 설정된 RViz 구성 파일.
 사용법: 런치 파일을 통해 RViz에서 일관된 시각화 설정을 제공합니다.

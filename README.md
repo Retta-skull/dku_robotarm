@@ -1,5 +1,7 @@
 # RobotArm ROS2 패키지
 
+이 패키지는 Ubuntu 24.04, ROS2 Jazzy를 통해 작성되었습니다.
+
 ## 목차
 
 - [소개](#소개)

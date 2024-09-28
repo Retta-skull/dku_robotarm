@@ -49,7 +49,7 @@
 `robotarm` 패키지를 설치하기 전에 다음이 설치되어 있는지 확인하세요:
 
 - **Unbuntu 24.04**
-- **ROS2**: [ROS2 JAZZY](https://docs.ros.org/en/jazzy/) (사용 중인 버전에 따라 조정).
+- **ROS2**: [ROS2 JAZZY](https://docs.ros.org/en/jazzy/)
 - **Python 3.8 이상**
 - **필요한 Python 패키지**:
   - requirements.txt 참고

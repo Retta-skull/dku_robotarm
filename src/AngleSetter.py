@@ -24,9 +24,9 @@ class AngleSetter(Node):
 
         # URDF 파일을 통해 체인 생성 (상대 경로 사용)
         try:
-            package_share_directory = get_package_share_directory('robotarm')
-            urdf_path = os.path.join(package_share_directory, 'urdf', 'robotarm.urdf')
-            self.chain = Chain.from_urdf_file(urdf_path)
+            package_share_directory = get_package_share_directory('dku_robotarm')
+            urdf_path = os.path.join(package_share_directory, 'urdf', 'dku_robotarm.urdf')
+            self.chain = Chain.from_urdf_file(urdf_path, active_links_mask=[0, 1, 1, 1, 1, 0, 1])
             self.get_logger().info(f"URDF 파일 '{urdf_path}'을 성공적으로 로드했습니다.")
         except Exception as e:
             self.get_logger().error(f"URDF 파일 로드 실패: {e}")

@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="robotic_arm_6dof">
+    <material name="green">
+        <color rgba="0 0.6 0 1" />
+    </material>
+    <material name="orange">
+        <color rgba="1.0 0.4 0.0 1.0"/>
+    </material>
+    <link name="base_link">
+        <inertial>
+            <origin xyz="0.016066406007730946 -0.0007383995830889046 0.18635342193047774" rpy="0.0 0.0 0.0" />
+            <mass value="10108.464808585133" />
+            <inertia ixx="3511.6717318932538" iyy="3546.4213725085747" izz="6430.4555200133655" ixy="1.9671180192205144" iyz="4.520646569886934" ixz="-89.14009134478852" />
+        </inertial>
+        <visual name="base_link_visual">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://dku_robotarm/meshes/base_link.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="green"/>
+        </visual>
+        <collision name="base_link_collision">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://dku_robotarm/meshes/base_link.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="link1">
+        <inertial>
+            <origin xyz="0.13676685305984662 -0.0013567981768122374 0.07844850848209987" rpy="0.0 -0.0 1.2833078587115125e-45" />
+            <mass value="306.57866664253083" />
+            <inertia ixx="14.59483721076515" iyy="17.941184517036277" izz="11.373863517076096" ixy="-0.12385159468621647" iyz="0.13206232916133545" ixz="3.2744738980260713" />
+        </inertial>
+        <visual name="link1_visual">
+            <origin xyz="0.08758465214484076 0.3875581613469681 6.9513990811972155" rpy="1.9171865108281437e-14 -3.565084295686091e-18 -9.142014000100509e-14" />
+            <geometry>
+                <mesh filename="package://dku_robotarm/meshes/link1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="orange"/>
+        </visual>
+        <collision name="link1_collision">
+            <origin xyz="0.08758465214484076 0.3875581613469681 6.9513990811972155" rpy="1.9171865108281437e-14 -3.565084295686091e-18 -9.142014000100509e-14" />
+            <geometry>
+                <mesh filename="package://dku_robotarm/meshes/link1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="link2">
+        <inertial>
+            <origin xyz="-6.278728058362049e-08 0.504778075741003 -0.2600613356532583" rpy="0.0 1.9680170284615523e-48 0.0" />
+            <mass value="100.44717038799456" />
+            <inertia ixx="14.443469805490906" iyy="6.379377146138671" izz="9.113680430306658" ixy="-3.739707253203057e-06" iyz="0.2504031653471161" ixz="2.474207214165399e-06" />
+        </inertial>
+        <visual name="link2_visual">
+            <origin xyz="-0.06499999954628287 -0.049999998157452125 -0.14499999729004048" rpy="-1.5707963267949172 3.921929992556472e-14 3.141592653589793" />
+            <geometry>
+                <mesh filename="package://dku_robotarm/meshes/link2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="green"/>
+        </visual>
+        <collision name="link2_collision">
+            <origin xyz="-0.06499999954628287 -0.049999998157452125 -0.14499999729004048" rpy="-1.5707963267949172 3.921929992556472e-14 3.141592653589793" />
+            <geometry>
+                <mesh filename="package://dku_robotarm/meshes/link2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="link3">
+        <inertial>
+            <origin xyz="0.008018061149591135 -0.18994555089044696 0.2678845916848489" rpy="0.0 -5.903206378273791e-47 -2.7369110631344083e-48" />
+            <mass value="326.3184161312811" />
+            <inertia ixx="26.46554217249559" iyy="8.226931654483263" izz="21.18708037768147" ixy="-0.36331100935638017" iyz="-0.6554408581826936" ixz="-0.035762248539254665" />
+        </inertial>
+        <visual name="link3_visual">
+            <origin xyz="0.6950036521443448 -0.40764545168231964 1.5713147303634196" rpy="1.570796326794913 -3.669764426027358e-13 -3.565084301857324e-18" />
+            <geometry>
+                <mesh filename="package://dku_robotarm/meshes/link3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="orange"/>
+        </visual>
+        <collision name="link3_collision">
+            <origin xyz="0.6950036521443448 -0.40764545168231964 1.5713147303634196" rpy="1.570796326794913 -3.669764426027358e-13 -3.565084301857324e-18" />
+            <geometry>
+                <mesh filename="package://dku_robotarm/meshes/link3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="link4">
+        <inertial>
+            <origin xyz="-0.3232652900000015 3.394947099999999 0.39588036000001153" rpy="0.0 -2.6079638540285554e-48 0.0" />
+            <mass value="0.0" />
+            <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="0.0" ixz="0.0" />
+        </inertial>
+        <visual name="link4_visual">
+            <origin xyz="0.7017118656731316 0.36533920476628906 -7.292275387295586" rpy="3.1415926535897785 -2.074883352853028e-14 3.141592653589793" />
+            <geometry>
+                <mesh filename="package://dku_robotarm/meshes/link4.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="green"/>
+        </visual>
+        <collision name="link4_collision">
+            <origin xyz="0.7017118656731316 0.36533920476628906 -7.292275387295586" rpy="3.1415926535897785 -2.074883352853028e-14 3.141592653589793" />
+            <geometry>
+                <mesh filename="package://dku_robotarm/meshes/link4.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="link5">
+        <inertial>
+            <origin xyz="-0.13717372270071743 0.34919312771105243 -0.1845791105733425" rpy="-7.888609052210118e-31 9.268484654383822e-49 0.0" />
+            <mass value="330.4055669252865" />
+            <inertia ixx="20.630198803243722" iyy="15.64968586640041" izz="18.50758278666941" ixy="-3.467909478927492" iyz="-3.9031353518690945" ixz="-3.8311589141915867" />
+        </inertial>
+        <visual name="link5_visual">
+            <origin xyz="9.588727173483157 4.589476534810201 1.6499581374904266" rpy="-3.1415926535897842 -1.5707963267948652 0" />
+            <geometry>
+                <mesh filename="package://dku_robotarm/meshes/link5.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="orange"/>
+        </visual>
+        <collision name="link5_collision">
+            <origin xyz="9.588727173483157 4.589476534810201 1.6499581374904266" rpy="-3.1415926535897842 -1.5707963267948652 0" />
+            <geometry>
+                <mesh filename="package://dku_robotarm/meshes/link5.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="end_effector">
+        <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <geometry>
+            <box size="0.01 0.01 0.01"/>
+        </geometry>
+        </visual>
+    </link>
+    <joint name="base_joint" type="revolute">
+        <origin xyz="0.3232552899999969 -0.10588035999994976 1.249957100000006" rpy="-1.75011923755963e-14 -1.056843376502257e-14 9.142014000100513e-14" />
+        <parent link="base_link" />
+        <child link="link1" />
+        <axis xyz="1.5777218104420236e-30 -9.629638507136242e-16 1.0" />
+        <limit lower="-1.570796" upper="1.570796" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="link1_link2" type="revolute">
+        <origin xyz="0.015010000000000403 -0.2675000000000001 0.14999999999999986" rpy="1.570796326794895 1.578492182419779e-30 -3.331398502653572e-31" />
+        <parent link="link1" />
+        <child link="link2" />
+        <axis xyz="1.26869229813338e-29 2.554632158605991e-15 -1.0" />
+        <limit lower="-1.570796" upper="1.570796" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="link2_link3" type="revolute">
+        <origin xyz="0.0 1.03 2.6290081223123707e-15" rpy="-3.1415926535897882 -1.686665139201828e-29 2.5422275265868423e-32" />
+        <parent link="link2" />
+        <child link="link3" />
+        <axis xyz="-4.1797284106844794e-30 2.3946249947807627e-15 1.0" />
+        <limit lower="-1.570796" upper="1.570796" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="link3_link4" type="revolute">
+        <origin xyz="-0.015000000000000284 -0.9649900000000002 -0.022499999999997727" rpy="-5.779955626391975e-15 -4.2470094647660125e-30 2.542227526592168e-32" />
+        <parent link="link3" />
+        <child link="link4" />
+        <axis xyz="6.728105408153287e-32 -3.3853306316112125e-15 1.0" />
+        <limit lower="-1.570796" upper="1.570796" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="link4_link5" type="revolute">
+        <origin xyz="-0.2700000000000013 -0.5774900000000014 0.34748999999999813" rpy="3.1415926535897922 4.262915079339174e-32 -4.578700705878737e-30" />
+        <parent link="link4" />
+        <child link="link5" />
+        <axis xyz="4.577930333900981e-30 0.9999999999999999 4.462142461080889e-15" />
+        <limit lower="0.0" upper="3.141593" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="end_effector" type="revolute">
+        <origin xyz="0 1.1 0" rpy="0.0 0.0 0.0"/>
+        <parent link="link5"/>
+        <child link="end_effector"/>
+        <axis xyz="0 0 1.0"/>
+        <limit lower="-1.57" upper="1.57" effort="0.92" velocity="5.24"/>
+    </joint>
+</robot>

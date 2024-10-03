@@ -16,7 +16,8 @@ class JointStatePublisher(Node):
         self.link1_link2 = 0.0
         self.link2_link3 = 0.0
         self.link3_link4 = 0.0
-        self.link4_end_effector = 0.0
+        self.link4_link5 = 0.0
+        self.end_effector = 0.0
 
         # 조인트 상태 퍼블리셔 생성
         self.publisher = self.create_publisher(JointState, '/joint_states', 10)
@@ -54,13 +55,14 @@ class JointStatePublisher(Node):
     def publish_joint_state(self):
         joint_state = JointState()
         joint_state.header.stamp = self.get_clock().now().to_msg()
-        joint_state.name = ['base_joint', 'link1_link2', 'link2_link3', 'link3_link4', 'link4_end_effector']
+        joint_state.name = ['base_joint', 'link1_link2', 'link2_link3', 'link3_link4', 'link4_link5', 'end_effector']
         joint_state.position = [
             math.radians(self.base_joint), 
             math.radians(self.link1_link2), 
             math.radians(self.link2_link3), 
             math.radians(self.link3_link4),
-            math.radians(self.link4_end_effector)
+            math.radians(self.link4_link5),
+            math.radians(self.end_effector),
         ]
         joint_state.velocity = []
         joint_state.effort = []

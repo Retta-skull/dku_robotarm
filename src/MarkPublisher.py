@@ -7,7 +7,7 @@ from geometry_msgs.msg import Point
 from std_msgs.msg import Float32MultiArray, Header
 import numpy as np
 
-class MarkerPublisher(Node):
+class MarkPublisher(Node):
     def __init__(self):
         super().__init__('mark_publisher')
         self.publisher = self.create_publisher(Marker, '/visualization_marker', 10)
@@ -19,7 +19,7 @@ class MarkerPublisher(Node):
         )
         self.subscription  # prevent unused variable warning
 
-        self.get_logger().info("MarkerPublisher 노드가 시작되었습니다. '/target_position' 토픽을 구독 중입니다.")
+        self.get_logger().info("MarkPublisher 노드가 시작되었습니다. '/target_position' 토픽을 구독 중입니다.")
 
     def target_position_callback(self, msg):
         if len(msg.data) != 3:
@@ -64,11 +64,11 @@ class MarkerPublisher(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    marker_publisher = MarkerPublisher()
+    marker_publisher = MarkPublisher()
     try:
         rclpy.spin(marker_publisher)
     except KeyboardInterrupt:
-        marker_publisher.get_logger().info("MarkerPublisher 노드가 키보드 인터럽트로 종료됩니다.")
+        marker_publisher.get_logger().info("MarkPublisher 노드가 키보드 인터럽트로 종료됩니다.")
     finally:
         marker_publisher.destroy_node()
         rclpy.shutdown()

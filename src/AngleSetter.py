@@ -26,8 +26,11 @@ class AngleSetter(Node):
         try:
             package_share_directory = get_package_share_directory('dku_robotarm')
             urdf_path = os.path.join(package_share_directory, 'urdf', 'dku_robotarm.urdf')
-            self.chain = Chain.from_urdf_file(urdf_path, active_links_mask=[0, 1, 1, 1, 1, 0, 1])
+            self.chain = Chain.from_urdf_file(urdf_path, active_links_mask= [0, 1, 1, 1, 1, 0, 0])
             self.get_logger().info(f"URDF 파일 '{urdf_path}'을 성공적으로 로드했습니다.")
+            for i, link in enumerate(self.chain.links):
+                print(f"Index {i}: Link name = {link.name}")
+
         except Exception as e:
             self.get_logger().error(f"URDF 파일 로드 실패: {e}")
             raise e

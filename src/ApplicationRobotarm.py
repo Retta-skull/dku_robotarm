@@ -25,6 +25,8 @@ class RobotArmController(Node):
         self.link2_3 = servo.Servo(self.pca.channels[2])       # 2번 채널: Link2_3
         self.link3_4 = servo.Servo(self.pca.channels[3])       # 3번 채널: Link3_4
         self.gripper = servo.Servo(self.pca.channels[5])
+
+        
         self.base_joint.set_pulse_width_range(500, 2500)
         self.link1_2.set_pulse_width_range(500, 2500)
         self.link2_3.set_pulse_width_range(500, 2500)

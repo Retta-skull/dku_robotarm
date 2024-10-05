@@ -44,6 +44,25 @@ class Gripper(Node):
         except Exception as e:
             self.get_logger().error(f"그리퍼에서 예상치 못한 오류 발생: {e}")
 
+    def grip_on(self):
+        try:
+            msg = Float32MultiArray()
+            msg.data = [float(170)]
+            self.publisher.publish(msg)
+            self.get_logger().info("그리퍼 on")
+        except Exception as e:
+            self.get_logger().error(f"그리퍼 오류 : {e}")
+    
+    def grip_off(self):
+        try:
+            msg = Float32MultiArray()
+            msg.data = [float(0)]
+            self.publisher.publish(msg)
+            self.get_logger().info("그리퍼 off")
+        except Exception as e:
+            self.get_logger().error(f"그리퍼 오류 : {e}")
+
+
 class Interface(Node):
     def __init__(self):
         super().__init__('interface_node')
@@ -61,7 +80,7 @@ class Interface(Node):
             try:
                 user_input = input("명령 입력 (Move x y z | Gripper angle): ")
                 if user_input.strip() == "":
-                    continue  # 빈 입력은 무시
+                    continue
                 parts = user_input.strip().split()
 
                 if parts[0].lower() == "move":
@@ -73,17 +92,10 @@ class Interface(Node):
                         self.move_node.move_xyz([x, y, z])
                     except ValueError:
                         self.get_logger().error("Move 명령은 세 개의 숫자 값을 필요로 합니다.")
-                
-                elif parts[0].lower() == "grip":
-                    if len(parts) != 2:
-                        self.get_logger().error("잘못된 Gripper 명령. 사용법: Gripper angle")
-                        continue
-                    try:
-                        angle = float(parts[1])
-                        self.gripper_node.set_gripper(angle)
-                    except ValueError:
-                        self.get_logger().error("Gripper 명령은 각도에 대한 숫자 값을 필요로 합니다.")
-                
+                elif user_input == "grip on":
+                    self.gripper_node.grip_on()
+                elif user_input == "grip off":
+                    self.gripper_node.grip_off()
                 else:
                     self.get_logger().error("알 수 없는 명령입니다. 'Move x y z' 또는 'Gripper angle'을 사용하세요.")
             

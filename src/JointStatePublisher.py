@@ -53,9 +53,7 @@ class JointStatePublisher(Node):
     def angle_callback(self, msg):
         self.get_logger().debug(f"Received message on '/joint_angles': {msg.data}")
         if len(msg.data) == 4:
-            # 각도를 업데이트 (도 단위)
             self.base_joint, self.link1_link2, self.link2_link3, self.link3_link4 = msg.data
-            # 라디안으로 변환하여 로그 출력
             self.get_logger().info(
                 f"Received radians: base_joint={math.radians(self.base_joint):.3f}, "
                 f"link1_link2={math.radians(self.link1_link2):.3f}, "

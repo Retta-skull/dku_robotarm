@@ -39,13 +39,20 @@ def generate_launch_description():
         output='screen'
     )
 
+
+    mark_publisher = Node(
+        package='dku_robotarm',
+        executable='MarkPublisher.py',
+        name='MarkPublisher',
+        output='screen'
+    )
+    
     joint_state_publisher_gui = Node(
         package='joint_state_publisher_gui',
         executable='joint_state_publisher_gui',
         output='screen'
     )
     
-    # rviz2 노드
     rviz2 = Node(
         package='rviz2',
         executable='rviz2',
@@ -56,6 +63,7 @@ def generate_launch_description():
     # 모든 노드를 LaunchDescription에 추가
     ld.add_action(robot_state_publisher)  
     ld.add_action(joint_state_publisher)      
+    ld.add_action(mark_publisher)
     #ld.add_action(joint_state_publisher_gui)
     ld.add_action(rviz2)
 

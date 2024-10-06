@@ -9,6 +9,7 @@ class Move(Node):
         super().__init__('xyz_publisher')
         self.publisher = self.create_publisher(Float32MultiArray, '/target_position', 10)
         self.get_logger().info("Move 노드가 초기화되었으며 목표 위치를 퍼블리시할 준비가 되었습니다.")
+        self.move_xyz([20, 0, 20])
 
     def move_xyz(self, xyz):
         try:
@@ -44,21 +45,21 @@ class Gripper(Node):
         except Exception as e:
             self.get_logger().error(f"그리퍼에서 예상치 못한 오류 발생: {e}")
 
-    def grip_on(self):
+    def gripper_open(self):
         try:
             msg = Float32MultiArray()
             msg.data = [float(170)]
             self.publisher.publish(msg)
-            self.get_logger().info("그리퍼 on")
+            self.get_logger().info("그리퍼 열기")
         except Exception as e:
             self.get_logger().error(f"그리퍼 오류 : {e}")
     
-    def grip_off(self):
+    def gripper_close(self):
         try:
             msg = Float32MultiArray()
             msg.data = [float(0)]
             self.publisher.publish(msg)
-            self.get_logger().info("그리퍼 off")
+            self.get_logger().info("그리퍼 닫기")
         except Exception as e:
             self.get_logger().error(f"그리퍼 오류 : {e}")
 
@@ -78,7 +79,7 @@ class Interface(Node):
     def get_user_input(self):
         while rclpy.ok():
             try:
-                user_input = input("명령 입력 (Move x y z | Gripper angle): ")
+                user_input = input("명령 입력 (Move x y z | Gripper open/close): ")
                 if user_input.strip() == "":
                     continue
                 parts = user_input.strip().split()
@@ -92,10 +93,10 @@ class Interface(Node):
                         self.move_node.move_xyz([x, y, z])
                     except ValueError:
                         self.get_logger().error("Move 명령은 세 개의 숫자 값을 필요로 합니다.")
-                elif user_input == "grip on":
-                    self.gripper_node.grip_on()
-                elif user_input == "grip off":
-                    self.gripper_node.grip_off()
+                elif user_input == "gripper close":
+                    self.gripper_node.gripper_close()
+                elif user_input == "gripper open":
+                    self.gripper_node.gripper_open()
                 else:
                     self.get_logger().error("알 수 없는 명령입니다. 'Move x y z' 또는 'Gripper angle'을 사용하세요.")
             

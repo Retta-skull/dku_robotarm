@@ -6,21 +6,21 @@ def generate_launch_description():
     ld = LaunchDescription()
 
     angle_setter = Node(
-        package='robotarm',
+        package='dku_robotarm',
         executable='AngleSetter.py',
         name='AngleSetter',
         output='screen'
     )
 
     marker_publisher = Node(
-        package='robotarm',
-        executable='MarkerPublisher.py',
-        name='MarkerPublisher',
+        package='dku_robotarm',
+        executable='MarkPublisher.py',
+        name='MarkPublisher',
         output='screen'
     )
 
     robot_arm_controller = Node(
-        package='robotarm',
+        package='dku_robotarm',
         executable='ApplicationRobotarm.py',
         name='RobotarmController',
         output='screen'

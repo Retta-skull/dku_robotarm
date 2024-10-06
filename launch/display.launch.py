@@ -5,11 +5,11 @@ import os
 
 def generate_launch_description():
     # 패키지의 공유 디렉토리 경로 가져오기
-    package_share_directory = get_package_share_directory('robotarm')
+    package_share_directory = get_package_share_directory('dku_robotarm')
 
     # URDF 파일과 RViz 설정 파일의 상대 경로 설정
-    urdf_file = os.path.join(package_share_directory, 'urdf', 'robotarm.urdf')
-    rviz_display_config_file = os.path.join(package_share_directory, 'rviz', 'robotarm.rviz')
+    urdf_file = os.path.join(package_share_directory, 'urdf', 'dku_robotarm.urdf')
+    rviz_display_config_file = os.path.join(package_share_directory, 'rviz', 'dku_robotarm.rviz')
 
     try:
         with open(urdf_file, 'r') as infp:
@@ -33,19 +33,26 @@ def generate_launch_description():
     )
 
     joint_state_publisher = Node(
-        package='robotarm',
+        package='dku_robotarm',
         executable='JointStatePublisher.py',
         name='JointStatePublisher',
         output='screen'
     )
 
+
+    mark_publisher = Node(
+        package='dku_robotarm',
+        executable='MarkPublisher.py',
+        name='MarkPublisher',
+        output='screen'
+    )
+    
     joint_state_publisher_gui = Node(
         package='joint_state_publisher_gui',
         executable='joint_state_publisher_gui',
         output='screen'
     )
     
-    # rviz2 노드
     rviz2 = Node(
         package='rviz2',
         executable='rviz2',
@@ -56,6 +63,7 @@ def generate_launch_description():
     # 모든 노드를 LaunchDescription에 추가
     ld.add_action(robot_state_publisher)  
     ld.add_action(joint_state_publisher)      
+    ld.add_action(mark_publisher)
     #ld.add_action(joint_state_publisher_gui)
     ld.add_action(rviz2)
 

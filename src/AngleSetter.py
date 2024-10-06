@@ -20,14 +20,15 @@ class AngleSetter(Node):
             self.target_position_callback,
             10
         )
-        self.subscription  # prevent unused variable warning
-
-        # URDF 파일을 통해 체인 생성 (상대 경로 사용)
+        self.subscription
         try:
-            package_share_directory = get_package_share_directory('robotarm')
-            urdf_path = os.path.join(package_share_directory, 'urdf', 'robotarm.urdf')
-            self.chain = Chain.from_urdf_file(urdf_path)
+            package_share_directory = get_package_share_directory('dku_robotarm')
+            urdf_path = os.path.join(package_share_directory, 'urdf', 'dku_robotarm.urdf')
+            self.chain = Chain.from_urdf_file(urdf_path, active_links_mask= [0, 1, 1, 1, 1, 0, 0])
             self.get_logger().info(f"URDF 파일 '{urdf_path}'을 성공적으로 로드했습니다.")
+            for i, link in enumerate(self.chain.links):
+                print(f"Index {i}: Link name = {link.name}")
+
         except Exception as e:
             self.get_logger().error(f"URDF 파일 로드 실패: {e}")
             raise e
@@ -44,8 +45,7 @@ class AngleSetter(Node):
         try:
             ik_solution = self.chain.inverse_kinematics(
                 target_position,
-                max_iter=1000,  # 최대 반복 횟수
-                # 기타 매개변수
+                max_iter=1000,  
             )
             end_effector_position = self.chain.forward_kinematics(ik_solution)[:3, 3]
             self.get_logger().info(f"Calculated End Effector Position: {end_effector_position}")
@@ -54,13 +54,8 @@ class AngleSetter(Node):
             error_vector = np.array(target_position) - np.array(end_effector_position)
             error_magnitude = np.linalg.norm(error_vector)
 
-            # if error_magnitude > ERROR_THRESHOLD:
-            #     self.get_logger().error(f"Position error too large: {error_magnitude:.4f}m. Movement aborted.")
-            #     return
-            # else:
             self.get_logger().info(f"Position error within tolerance: {error_magnitude:.4f}m. Proceeding with movement.")
 
-            # 조인트 각도 (degree 단위) 추출 및 퍼블리시
             joint_angles = [np.degrees(angle) for angle in ik_solution[1:5]]  # 필요에 따라 인덱스 조정
             angle_msg = Float32MultiArray()
             angle_msg.data = joint_angles

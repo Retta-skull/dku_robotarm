@@ -80,9 +80,11 @@ class RobotArmController(Node):
         return (angle + 90)
 
     def set_joint_angle(self, joint_name, angle):
-        """주어진 관절을 특정 각도로 이동"""
         if joint_name == "base_joint":
-            self.base_joint.angle = angle
+            while(self.base_joint > angle):
+                self.base_joint.angle = self.base_joint.angle + 1
+                time.sleep(0.1)
+            
         elif joint_name == "link1_2":
             self.link1_2.angle = angle
         elif joint_name == "link2_3":

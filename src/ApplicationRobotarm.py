@@ -57,11 +57,8 @@ class RobotArmController(Node):
         if len(angles) >= 4:
             # 각각의 모터에 각도를 설정 (변환 적용)
             self.set_joint_angle("base_joint", self.convert_angle(angles[0]))
-            time.sleep(0.1)
             self.set_joint_angle("link1_2", 180 - self.convert_angle(angles[1]))
-            time.sleep(0.1)
             self.set_joint_angle("link2_3", self.convert_angle(angles[2]))
-            time.sleep(0.1)
             self.set_joint_angle("link3_4", self.convert_angle(angles[3]))
             self.get_logger().info(f"Received joint angles: {self.convert_angle(angles[0]),180 - self.convert_angle(angles[1]), self.convert_angle(angles[2]), self.convert_angle(angles[3])}")
         else:
@@ -79,22 +76,47 @@ class RobotArmController(Node):
         """-90 ~ 90 범위의 각도를 0 ~ 180도로 변환"""
         return (angle + 90)
 
-    def set_joint_angle(self, joint_name, angle):
+    def set_joint_angle(self, joint_name, target_angle, step=1, delay=0.05):
+        # 현재 각도를 읽어옵니다.
         if joint_name == "base_joint":
-            while(self.base_joint > angle):
-                self.base_joint.angle = self.base_joint.angle + 1
-                time.sleep(0.1)
-            
+            current_angle = self.base_joint.angle
         elif joint_name == "link1_2":
-            self.link1_2.angle = angle
+            current_angle = self.link1_2.angle
         elif joint_name == "link2_3":
-            self.link2_3.angle = angle
+            current_angle = self.link2_3.angle
         elif joint_name == "link3_4":
-            self.link3_4.angle = angle
+            current_angle = self.link3_4.angle
         elif joint_name == "gripper":
-            self.gripper.angle = angle
+            current_angle = self.gripper.angle
         else:
             self.get_logger().warn(f"'{joint_name}'는 유효한 관절 이름이 아닙니다.")
+            return
+        
+        step = step if target_angle > current_angle else -step
+        for angle in range(int(current_angle), int(target_angle), step):
+            if joint_name == "base_joint":
+                self.base_joint.angle = angle
+            elif joint_name == "link1_2":
+                self.link1_2.angle = angle
+            elif joint_name == "link2_3":
+                self.link2_3.angle = angle
+            elif joint_name == "link3_4":
+                self.link3_4.angle = angle
+            elif joint_name == "gripper":
+                self.gripper.angle = angle
+            time.sleep(delay)
+
+        # 목표 각도에 정확히 도달하도록 마지막으로 설정
+        if joint_name == "base_joint":
+            self.base_joint.angle = target_angle
+        elif joint_name == "link1_2":
+            self.link1_2.angle = target_angle
+        elif joint_name == "link2_3":
+            self.link2_3.angle = target_angle
+        elif joint_name == "link3_4":
+            self.link3_4.angle = target_angle
+        elif joint_name == "gripper":
+            self.gripper.angle = target_angle
 
     def disable_all_motors(self):
         """모든 서보 모터의 신호를 비활성화하여 힘 제거"""

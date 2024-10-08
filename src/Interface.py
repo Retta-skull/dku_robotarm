@@ -79,26 +79,26 @@ class Interface(Node):
     def get_user_input(self):
         while rclpy.ok():
             try:
-                user_input = input("명령 입력 (Move x y z | Gripper open/close): ")
+                user_input = input("명령 입력 (Move x y z | open/close): ")
                 if user_input.strip() == "":
                     continue
                 parts = user_input.strip().split()
 
                 if parts[0].lower() == "move":
                     if len(parts) != 4:
-                        self.get_logger().error("잘못된 Move 명령. 사용법: Move x y z")
+                        self.get_logger().error("알 수 없는 명령입니다.")
                         continue
                     try:
                         x, y, z = map(float, parts[1:4])
                         self.move_node.move_xyz([x, y, z])
                     except ValueError:
                         self.get_logger().error("Move 명령은 세 개의 숫자 값을 필요로 합니다.")
-                elif user_input == "gripper close":
+                elif user_input == "close":
                     self.gripper_node.gripper_close()
-                elif user_input == "gripper open":
+                elif user_input == "open":
                     self.gripper_node.gripper_open()
                 else:
-                    self.get_logger().error("알 수 없는 명령입니다. 'Move x y z' 또는 'Gripper angle'을 사용하세요.")
+                    self.get_logger().error("알 수 없는 명령입니다.")
             
             except EOFError:
                 self.get_logger().info("EOF 감지. 인터페이스 노드를 종료합니다.")

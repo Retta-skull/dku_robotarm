@@ -65,7 +65,7 @@ class JointStatePublisher(Node):
 
     def Gripper_callback(self, msg):
         if len(msg.data) == 1:
-            grip_angle = msg.data[0]/2
+            grip_angle = 90 - msg.data[0]/2
             self.main_gripper1 = -grip_angle
             self.main_gripper2 = grip_angle
             self.sub_gripper1 = grip_angle

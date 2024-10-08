@@ -1,0 +1,7 @@
+# API 키를 포함한 설정 파일 무시
+config.py
+.env
+
+# 기타 무시할 파일 또는 디렉토리
+*.log
+node_modules/

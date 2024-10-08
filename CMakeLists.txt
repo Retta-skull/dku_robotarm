@@ -19,12 +19,25 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-file(GLOB PY_SCRIPTS "src/*.py")
+file(GLOB PY_SCRIPTS
+  "src/*.py",
+  "src/control/*.py",
+  "src/display/*.py"
+)
+
+file(GLOB API_SCRIPTS
+  "src/gpt_api/*.py"
+)
+
 
 install(PROGRAMS
   ${PY_SCRIPTS}
   DESTINATION lib/${PROJECT_NAME}
   PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_EXECUTE WORLD_READ
+)
+install(PROGRAMS
+  ${API_SCRIPTS}
+  DESTINATION lib/${PROJECT_NAME}/gpt_api
 )
 
 install(

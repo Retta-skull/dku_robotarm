@@ -8,7 +8,7 @@ import tempfile
 import time
 
 class TextToSpeech:
-    def __init__(self, api_key, model="tts-1", voice="alloy"):
+    def __init__(self, api_key, model="tts-1", voice="nova"):
         self.client = OpenAI(api_key=api_key)
         self.model = model
         self.voice = voice

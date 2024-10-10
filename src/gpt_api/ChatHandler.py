@@ -15,7 +15,8 @@ class ChatThreadHandler:
         self.assistant_id = assistant_id
         self.thread_id = None
         self.run = None
-
+        self.create_new_thread()
+        
     def create_new_thread(self):
         thread = openai.beta.threads.create()
         self.thread_id = thread.id
@@ -74,7 +75,6 @@ class ChatThreadHandler:
         print(json.dumps(obj.model_dump(), ensure_ascii=False, indent=2))
 
     def run_chat(self, user_message):
-        self.create_new_thread()
         self.submit_message(user_message)
         self.wait_on_run()
         response = self.get_response()

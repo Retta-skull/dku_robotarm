@@ -110,7 +110,6 @@ def main(args=None):
     rclpy.init(args=args)
     interface = Interface()
     
-    # 여러 노드를 동시에 처리하기 위한 MultiThreadedExecutor 생성
     executor = rclpy.executors.MultiThreadedExecutor()
     executor.add_node(interface)
     executor.add_node(interface.move_node)

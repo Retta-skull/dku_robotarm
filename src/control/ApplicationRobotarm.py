@@ -33,6 +33,8 @@ class RobotArmController(Node):
         self.link3_4.set_pulse_width_range(500, 2500)
         self.gripper.set_pulse_width_range(500, 2500)
 
+        self.init_joint_angle()
+
         # /joint_angles 토픽 구독
         self.joint_angles_subscription = self.create_subscription(
             Float32MultiArray,
@@ -71,12 +73,18 @@ class RobotArmController(Node):
         self.get_logger().info(f"Received gripper angles: {angle[0]}")
 
 
+    def init_joint_angle(self):
+        self.base_joint.angle = self.convert_angle(2.03)
+        self.link1_2.angle = 180 - self.convert_angle(-28.84)
+        self.link2_3.angle = self.convert_angle(79.44)
+        self.link3_4.angle = self.convert_angle(81.58)
+        self.gripper.angle = 180
 
     def convert_angle(self, angle):
         """-90 ~ 90 범위의 각도를 0 ~ 180도로 변환"""
         return (angle + 90)
 
-    def set_joint_angle(self, joint_name, target_angle, step=1, delay=0.05):
+    def set_joint_angle(self, joint_name, target_angle, step=1, delay=0.01):
         # 현재 각도를 읽어옵니다.
         if joint_name == "base_joint":
             current_angle = self.base_joint.angle

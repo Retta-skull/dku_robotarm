@@ -55,10 +55,10 @@ class JointStatePublisher(Node):
         if len(msg.data) == 4:
             self.base_joint, self.link1_link2, self.link2_link3, self.link3_link4 = msg.data
             self.get_logger().info(
-                f"Received radians: base_joint={math.radians(self.base_joint):.3f}, "
-                f"link1_link2={math.radians(self.link1_link2):.3f}, "
-                f"link2_link3={math.radians(self.link2_link3):.3f}, "
-                f"link3_link4={math.radians(self.link3_link4):.3f}"
+                f"Received radians: base_joint={(self.base_joint):.3f}, "
+                f"link1_link2={self.link1_link2:.3f}, "
+                f"link2_link3={self.link2_link3:.3f}, "
+                f"link3_link4={self.link3_link4:.3f}"
             )
         else:
             self.get_logger().error(f"Invalid data length: expected 1 or 4, got {len(msg.data)}")

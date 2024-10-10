@@ -24,7 +24,6 @@ def main():
     Order: 왼쪽의 빨간블럭을 파란블럭 위치로 옮겨줘
     Data: [
       {name: "빨간블럭", coordinates: (20, 30, 10)},
-      {name: "빨간블럭", coordinates: (10, 30, 10)},
       {name: "파란블럭", coordinates: (60, 25, 55)},
       {name: "초록블럭", coordinates: (35, 18, 45)}
     ]

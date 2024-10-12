@@ -12,6 +12,8 @@ class Robot:
         self.move_publisher = self.node.create_publisher(Float32MultiArray, '/target_position', 10)
         self.gripper_publisher = self.node.create_publisher(Float32MultiArray, '/gripper_angle', 10)
         self.node.get_logger().info("로봇 제어 퍼블리셔 초기화 완료.")
+        self.CurrentPosition = []
+        self.move_robot([20, 20, 20])
 
     def move_robot(self, coordinates):
         if len(coordinates) != 3:
@@ -21,6 +23,7 @@ class Robot:
         msg.data = coordinates
         self.move_publisher.publish(msg)
         self.node.get_logger().info(f"MOVE 명령 실행: {coordinates}")
+        self.CurrentPosition = coordinates
 
     def open_gripper(self):
         msg = Float32MultiArray()
@@ -54,11 +57,16 @@ class ActionExecutor:
         self.actions = actions  # ActionData 객체들의 리스트
         self.robot = robot
 
+    def UpdatePosition(self):
+        self.robot.node.get_logger().info(f"현재 위치: {self.robot.CurrentPosition}")
+        return self.robot.CurrentPosition
+    
     def execute_all(self):
         for idx, action_data in enumerate(self.actions, start=1):
             action = Action(action_data.action_type, action_data.parameters)
             self.robot.node.get_logger().info(f"--- {idx}번째 명령어: {action.action_type} ---")
             action.execute(self.robot)
             time.sleep(1)
-            
+            if action.action_type == 'MOVE':
+                self.UpdatePosition()
         self.robot.node.get_logger().info("모든 명령어가 성공적으로 실행되었습니다.")

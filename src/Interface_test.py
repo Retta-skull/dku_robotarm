@@ -22,16 +22,17 @@ def main():
     tts = TextToSpeech(API_KEY)
     sp = SpeechProcessor(API_KEY)
 
-    # 명령 메시지 정의
-    message = """
-    Order: 왼쪽의 빨간블럭을 파란블럭 위치로 옮겨줘
-    Data: [
-      {name: "빨간블럭", coordinates: (20, 30, 5)},
-      {name: "파란블럭", coordinates: (30, 10, 5)},
-      {name: "초록블럭", coordinates: (35, 18, 5)}
-    ]
-    """
+    CurrentPosition = [20, 20, 20]
 
+    # 명령 메시지 정의
+    message = f"""
+    Order: "빨간블럭을 초록블럭 위로 올려줘"
+    CurrentPosition: {CurrentPosition}
+    Data: [
+    {{name: \"빨간블럭\", coordinates: (30, 10, 5)}},
+    {{name: \"파란블럭\", coordinates: (20, 10, 5)}}, 
+    {{name: \"초록블럭\", coordinates: (25, 10, 5)}}]
+    """
     # GPT API에 명령 전송 및 응답 받기
     node.get_logger().info("GPT API에 명령을 전송 중...")
     response = chat_handler.run_chat(message)
@@ -50,6 +51,7 @@ def main():
     # 액션 실행기 초기화 및 실행
     executor = ActionExecutor(parsed.actions, robot)
     executor.execute_all()
+    CurrentPosition = executor.UpdatePosition()
 
     # ROS 2 퍼블리셔가 메시지를 전송할 시간을 줌
     rclpy.spin_once(node, timeout_sec=1.0)

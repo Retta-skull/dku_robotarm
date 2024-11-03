@@ -57,7 +57,7 @@ class Gripper(Node):
     def gripper_close(self):
         try:
             msg = Float32MultiArray()
-            msg.data = [float(160)]
+            msg.data = [float(175)]
             self.publisher.publish(msg)
             self.get_logger().info("그리퍼 닫기")
         except Exception as e:

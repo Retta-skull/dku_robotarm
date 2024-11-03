@@ -22,7 +22,7 @@ def main():
     tts = TextToSpeech(API_KEY)
     sp = SpeechProcessor(API_KEY)
 
-    CurrentPosition = [20, 20, 20]
+    CurrentPosition = [0, 20, 20]
 
     # 명령 메시지 정의
     message = f"""

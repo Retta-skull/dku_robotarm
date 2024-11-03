@@ -29,5 +29,5 @@ def generate_launch_description():
     # 모든 노드를 LaunchDescription에 추가
     ld.add_action(angle_setter)
     ld.add_action(marker_publisher)
-    #ld.add_action(robot_arm_controller)
+    ld.add_action(robot_arm_controller)
     return ld

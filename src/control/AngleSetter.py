@@ -39,7 +39,7 @@ class AngleSetter(Node):
             return
 
         x, y, z = msg.data
-        target_position = [x / 10.0, y / 10.0, z / 10.0]  # 단위 변환 (예: mm -> m)
+        target_position = [x / 10.0, y / 10.0, z / 10.0]  # 단위 변환 (예: mm -> cm)
         self.get_logger().info(f"Received Target Position: {target_position}")
 
         try:

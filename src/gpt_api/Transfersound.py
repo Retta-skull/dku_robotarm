@@ -65,7 +65,7 @@ class TextToSpeech:
         self.p.terminate()
 
 class SpeechProcessor:
-    def __init__(self, api_key, rate=44100, channels=1, format=pyaudio.paInt16, chunk=8192, threshold=1500, silence_limit=3):
+    def __init__(self, api_key, rate=44100, channels=1, format=pyaudio.paInt16, chunk=8192, threshold=10, silence_limit=3):
         self.client = OpenAI(api_key=api_key)
         self.rate = rate
         self.channels = channels
@@ -93,9 +93,9 @@ class SpeechProcessor:
             amplitude = np.frombuffer(data, dtype=np.int16)
             volume = np.abs(amplitude).mean()
             
-            if not recording:
-                print(volume)
-                time.sleep(0.1)  # 볼륨 출력 간 딜레이 추가
+            # if True:
+            #     print(volume)
+            #     time.sleep(0.1)  # 볼륨 출력 간 딜레이 추가
 
             if volume > self.threshold:
                 if not recording:

@@ -24,7 +24,7 @@ class RobotController(Node):
         self.detection_data = ""  # 최신 데이터만 유지
 
         # Timer 설정: 2초마다 main_loop 작업 실행
-        self.timer = self.create_timer(2.0, self.main_loop)
+        self.timer = self.create_timer(5.0, self.main_loop)
 
     def handle_detection_data(self, msg):
         # 수신한 탐지 데이터를 최신 데이터로 갱신
@@ -50,8 +50,8 @@ class RobotController(Node):
 
         if parsed and hasattr(parsed, 'actions'):
             executor = ActionExecutor(parsed.actions, self.robot)
-            executor.execute_all()
             self.CurrentPosition = executor.UpdatePosition()
+            executor.execute_all()
 
 def main():
     rclpy.init()

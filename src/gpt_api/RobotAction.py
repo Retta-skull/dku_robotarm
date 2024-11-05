@@ -27,13 +27,13 @@ class Robot:
 
     def open_gripper(self):
         msg = Float32MultiArray()
-        msg.data = [0.0]
+        msg.data = [40]
         self.gripper_publisher.publish(msg)
         self.node.get_logger().info("그리퍼 열기 명령 실행.")
 
     def close_gripper(self):
         msg = Float32MultiArray()
-        msg.data = [160.0]
+        msg.data = [160]
         self.gripper_publisher.publish(msg)
         self.node.get_logger().info("그리퍼 닫기 명령 실행.")
 
@@ -70,3 +70,4 @@ class ActionExecutor:
             if action.action_type == 'MOVE':
                 self.UpdatePosition()
         self.robot.node.get_logger().info("모든 명령어가 성공적으로 실행되었습니다.")
+        self.robot.move_robot([0, 20, 20])

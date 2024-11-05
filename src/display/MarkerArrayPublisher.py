@@ -48,7 +48,7 @@ class MarkArrayPublisher(Node):
                     self.get_logger().error("Invalid data format: 'x', 'y', 'z', and 'label' are required for each object.")
                     continue
 
-                self.get_logger().info(f"Received target position: label={label}, x={x}, y={y}, z={z}")
+                # self.get_logger().info(f"Received target position: label={label}, x={x}, y={y}, z={z}")
 
                 # 마커 생성
                 marker = Marker()
@@ -100,7 +100,7 @@ class MarkArrayPublisher(Node):
 
                 # MarkerArray에 마커 추가
                 marker_array.markers.append(marker)
-                self.get_logger().info(f"Prepared Marker for {label} at: ({marker.pose.position.x}, {marker.pose.position.y}, {marker.pose.position.z})")
+                # self.get_logger().info(f"Prepared Marker for {label} at: ({marker.pose.position.x}, {marker.pose.position.y}, {marker.pose.position.z})")
 
             # 일정 시간 동안 인식되지 않은 마커를 삭제
             for label, last_time in list(self.last_seen.items()):
@@ -116,7 +116,7 @@ class MarkArrayPublisher(Node):
 
             # 모든 마커를 포함한 MarkerArray 퍼블리시
             self.publisher.publish(marker_array)
-            self.get_logger().info("Published all markers in MarkerArray")
+            # self.get_logger().info("Published all markers in MarkerArray")
 
         except json.JSONDecodeError as e:
             self.get_logger().error(f"Failed to parse JSON data: {e}")

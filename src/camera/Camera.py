@@ -31,7 +31,7 @@ class YOLODetector(Node):
 
             for box in boxes:
                 confidence = box.conf[0]
-                if confidence >= 0.85:  # 신뢰도 0.9 이상인 경우에만 처리
+                if confidence >= 0.7:  # 신뢰도 0.9 이상인 경우에만 처리
                     x_min, y_min, x_max, y_max = map(int, box.xyxy[0])
                     class_id = int(box.cls[0])
                     label = f"{self.model.names[class_id]}"
@@ -46,9 +46,9 @@ class YOLODetector(Node):
 
                     detection_item = {
                         "label": label,
-                        "x": center_x_cm,
-                        "y": center_y_cm,
-                        "z": 0
+                        "x": round(center_x_cm,2),
+                        "y": round(center_y_cm,2),
+                        "z": 1.25
                     }
                     detection_data.append(detection_item)
 

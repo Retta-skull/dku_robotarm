@@ -1,131 +1,64 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Float32MultiArray
-import threading
+from std_msgs.msg import String
+from config import ASSISTANT_ID, API_KEY
+from gpt_api.ChatHandler import ChatThreadHandler
+from gpt_api.DataPreprocessing import ResponseParser
+from gpt_api.RobotAction import ActionExecutor, Robot
+from gpt_api.Transfersound import TextToSpeech, SpeechProcessor
 
-class Move(Node):
+class RobotController(Node):
     def __init__(self):
-        super().__init__('xyz_publisher')
-        self.publisher = self.create_publisher(Float32MultiArray, '/target_position', 10)
-        self.get_logger().info("Move 노드가 초기화되었으며 목표 위치를 퍼블리시할 준비가 되었습니다.")
-        self.move_xyz([0, 20, 20])
+        super().__init__('robot_controller')
+        
+        # 퍼블리셔 및 GPT 관련 초기화
+        self.robot = Robot(self)
+        self.chat_handler = ChatThreadHandler(assistant_id=ASSISTANT_ID, api_key=API_KEY)
+        self.tts = TextToSpeech(API_KEY)
+        self.sp = SpeechProcessor(API_KEY)
+        self.CurrentPosition = [0, 20, 20]
 
-    def move_xyz(self, xyz):
-        try:
-            if len(xyz) != 3:
-                self.get_logger().error("Move를 위해서는 x, y, z의 3개의 입력 값이 필요합니다.")
-                return
-            msg = Float32MultiArray()
-            msg.data = xyz
-            self.publisher.publish(msg)
-            self.get_logger().info(f"목표 위치 퍼블리시됨: {msg.data}")
-        except ValueError as e:
-            self.get_logger().error(f"Move에 잘못된 입력: {e}")
-        except Exception as e:
-            self.get_logger().error(f"Move에서 예상치 못한 오류 발생: {e}")
+        # YOLODetector에서 퍼블리시한 detection_data 구독
+        self.create_subscription(String, 'detection_data', self.handle_detection_data, 10)
+        self.detection_data = ""  # 최신 데이터만 유지
 
-class Gripper(Node):
-    def __init__(self):
-        super().__init__('grip_publisher')
-        self.publisher = self.create_publisher(Float32MultiArray, '/gripper_angle', 10)
-        self.get_logger().info("Gripper 노드가 초기화되었으며 그리퍼 각도를 퍼블리시할 준비가 되었습니다.")
+        # Timer 설정: 2초마다 main_loop 작업 실행
+        self.timer = self.create_timer(2.0, self.main_loop)
 
-    def set_gripper(self, angle):
-        try:
-            if not isinstance(angle, (int, float)):
-                self.get_logger().error("그리퍼 각도는 숫자여야 합니다.")
-                return
-            msg = Float32MultiArray()
-            msg.data = [float(angle)]
-            self.publisher.publish(msg)
-            self.get_logger().info(f"그리퍼 각도 퍼블리시됨: {msg.data[0]}")
-        except ValueError as e:
-            self.get_logger().error(f"그리퍼에 잘못된 입력: {e}")
-        except Exception as e:
-            self.get_logger().error(f"그리퍼에서 예상치 못한 오류 발생: {e}")
+    def handle_detection_data(self, msg):
+        # 수신한 탐지 데이터를 최신 데이터로 갱신
+        self.detection_data = msg.data
+        self.get_logger().info(f"Detection Data: {msg.data}")
 
-    def gripper_open(self):
-        try:
-            msg = Float32MultiArray()
-            msg.data = [float(0)]
-            self.publisher.publish(msg)
-            self.get_logger().info("그리퍼 열기")
-        except Exception as e:
-            self.get_logger().error(f"그리퍼 오류 : {e}")
-    
-    def gripper_close(self):
-        try:
-            msg = Float32MultiArray()
-            msg.data = [float(175)]
-            self.publisher.publish(msg)
-            self.get_logger().info("그리퍼 닫기")
-        except Exception as e:
-            self.get_logger().error(f"그리퍼 오류 : {e}")
+    def main_loop(self):
+        temp_file = self.sp.record_audio()
+        transcription = self.sp.transcribe_audio(temp_file)
+        self.get_logger().info(f"Transcription: {transcription}")
 
+        # 명령 메시지 생성 및 GPT API 전송
+        message = f"""Order: {transcription}
+                    CurrentPosition: {self.CurrentPosition}
+                    Data: {self.detection_data}"""
+        response = self.chat_handler.run_chat(message)
+        self.get_logger().info(f"GPT API 응답: {response}")
 
-class Interface(Node):
-    def __init__(self):
-        super().__init__('interface_node')
-        self.move_node = Move()
-        self.gripper_node = Gripper()
-        self.get_logger().info("인터페이스 노드가 시작되었습니다. 명령을 대기 중...")
+        # 응답을 파싱하여 액션 실행
+        parser = ResponseParser(response)
+        parsed = parser.get_parsed_response()
+        self.tts.speak(parsed.reply)
 
-        # 사용자 입력을 처리하는 별도의 스레드 시작
-        self.input_thread = threading.Thread(target=self.get_user_input)
-        self.input_thread.daemon = True  # 메인 프로그램이 종료될 때 스레드도 종료되도록 설정
-        self.input_thread.start()
+        if parsed and hasattr(parsed, 'actions'):
+            executor = ActionExecutor(parsed.actions, self.robot)
+            executor.execute_all()
+            self.CurrentPosition = executor.UpdatePosition()
 
-    def get_user_input(self):
-        while rclpy.ok():
-            try:
-                user_input = input("명령 입력 (Move x y z | open/close): ")
-                if user_input.strip() == "":
-                    continue
-                parts = user_input.strip().split()
+def main():
+    rclpy.init()
+    robot_controller = RobotController()
+    rclpy.spin(robot_controller)  # 콜백을 비동기적으로 계속 수신
+    robot_controller.destroy_node()
+    rclpy.shutdown()
 
-                if parts[0].lower() == "move":
-                    if len(parts) != 4:
-                        self.get_logger().error("알 수 없는 명령입니다.")
-                        continue
-                    try:
-                        x, y, z = map(float, parts[1:4])
-                        self.move_node.move_xyz([x, y, z])
-                    except ValueError:
-                        self.get_logger().error("Move 명령은 세 개의 숫자 값을 필요로 합니다.")
-                elif user_input == "close":
-                    self.gripper_node.gripper_close()
-                elif user_input == "open":
-                    self.gripper_node.gripper_open()
-                else:
-                    self.get_logger().error("알 수 없는 명령입니다.")
-            
-            except EOFError:
-                self.get_logger().info("EOF 감지. 인터페이스 노드를 종료합니다.")
-                rclpy.shutdown()
-            except Exception as e:
-                self.get_logger().error(f"입력 처리 중 오류 발생: {e}")
-
-def main(args=None):
-    rclpy.init(args=args)
-    interface = Interface()
-    
-    executor = rclpy.executors.MultiThreadedExecutor()
-    executor.add_node(interface)
-    executor.add_node(interface.move_node)
-    executor.add_node(interface.gripper_node)
-    
-    try:
-        executor.spin()
-    except KeyboardInterrupt:
-        interface.get_logger().info("KeyboardInterrupt 감지. 종료합니다.")
-    finally:
-        # 모든 노드를 안전하게 종료
-        executor.shutdown()
-        interface.move_node.destroy_node()
-        interface.gripper_node.destroy_node()
-        interface.destroy_node()
-        rclpy.shutdown()
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

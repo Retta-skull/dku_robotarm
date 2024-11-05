@@ -46,6 +46,19 @@ def generate_launch_description():
         name='MarkPublisher',
         output='screen'
     )
+
+    markarray_publisher = Node(
+        package='dku_robotarm',
+        executable='MarkerArrayPublisher.py',
+        name='MarkArrayPublisher',
+        output='screen'
+    )
+    yolo_publisher = Node(
+        package='dku_robotarm',
+        executable='Camera.py',
+        name='yolo_detector',
+        output='screen'
+    )
     
     joint_state_publisher_gui = Node(
         package='joint_state_publisher_gui',
@@ -64,6 +77,8 @@ def generate_launch_description():
     ld.add_action(robot_state_publisher)  
     ld.add_action(joint_state_publisher)      
     ld.add_action(mark_publisher)
+    ld.add_action(yolo_publisher)
+    ld.add_action(markarray_publisher)
     # ld.add_action(joint_state_publisher_gui)
     ld.add_action(rviz2)
 

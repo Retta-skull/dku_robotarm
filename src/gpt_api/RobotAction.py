@@ -13,7 +13,7 @@ class Robot:
         self.gripper_publisher = self.node.create_publisher(Float32MultiArray, '/gripper_angle', 10)
         self.node.get_logger().info("로봇 제어 퍼블리셔 초기화 완료.")
         self.CurrentPosition = []
-        self.move_robot([20, 20, 20])
+        self.move_robot([0, 20, 20])
 
     def move_robot(self, coordinates):
         if len(coordinates) != 3:

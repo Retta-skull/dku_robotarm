@@ -46,13 +46,15 @@ class TextToSpeech:
         stream.stop_stream()
         stream.close()
 
-    def get_default_output_device(self):
+    def get_default_output_device(self, preferred_name="pulse"):
         count = self.p.get_device_count()
         for i in range(count):
             device_info = self.p.get_device_info_by_index(i)
-            if device_info["maxOutputChannels"] > 0:
+            # print(f'device_info : {device_info}')
+            if device_info["maxOutputChannels"] > 0 and preferred_name in device_info["name"]:
                 return i
-        raise OSError("No valid output device found")
+        raise OSError(f"No input device found with name containing '{preferred_name}'")
+
 
     def speak(self, text):
         data, samplerate = self.generate_speech(text)
@@ -63,7 +65,7 @@ class TextToSpeech:
         self.p.terminate()
 
 class SpeechProcessor:
-    def __init__(self, api_key, rate=16000, channels=1, format=pyaudio.paInt16, chunk=1024, threshold=1500, silence_limit=3):
+    def __init__(self, api_key, rate=44100, channels=1, format=pyaudio.paInt16, chunk=8192, threshold=1500, silence_limit=3):
         self.client = OpenAI(api_key=api_key)
         self.rate = rate
         self.channels = channels
@@ -72,11 +74,13 @@ class SpeechProcessor:
         self.threshold = threshold
         self.silence_limit = silence_limit
         self.p = pyaudio.PyAudio()
+        self.input_device_index = self.get_default_input_device()
 
     def record_audio(self):
-        stream = self.p.open(format=self.format, channels=self.channels,
-                             rate=self.rate, input=True,
-                             frames_per_buffer=self.chunk)
+        stream = self.p.open(format=self.format, channels = self.channels,
+                             rate=self.rate, input = True,
+                             frames_per_buffer = self.chunk,
+                             input_device_index = self.input_device_index)
 
         print("Listening for sound...")
         frames = []
@@ -136,6 +140,17 @@ class SpeechProcessor:
                 response_format="text"
             )
         return transcription
+    
+    def get_default_input_device(self, preferred_name="pulse"):
+        count = self.p.get_device_count()
+        for i in range(count):
+            device_info = self.p.get_device_info_by_index(i)
+            # print(f'device_info : {device_info}')
+            if device_info["maxInputChannels"] > 0 and preferred_name in device_info["name"]:
+                return i
+        raise OSError(f"No input device found with name containing '{preferred_name}'")
+
+
 
     def __del__(self):
         # PyAudio 종료

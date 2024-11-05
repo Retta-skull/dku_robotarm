@@ -22,7 +22,8 @@ endif()
 file(GLOB PY_SCRIPTS
   "src/*.py",
   "src/control/*.py",
-  "src/display/*.py"
+  "src/display/*.py",
+  "src/camera/Camera.py"
 )
 
 file(GLOB API_SCRIPTS

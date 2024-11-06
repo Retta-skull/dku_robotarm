@@ -20,9 +20,9 @@ if(BUILD_TESTING)
 endif()
 
 file(GLOB PY_SCRIPTS
-  "src/*.py",
-  "src/control/*.py",
-  "src/display/*.py",
+  "src/*.py"
+  "src/control/*.py"
+  "src/display/*.py"
   "src/camera/Camera.py"
 )
 

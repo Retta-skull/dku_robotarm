@@ -40,11 +40,13 @@ class AngleSetter(Node):
 
         x, y, z = msg.data
         target_position = [x / 10.0, y / 10.0, z / 10.0]  # 단위 변환 (예: mm -> cm)
+        target_orientation = [0, -90,]
         self.get_logger().info(f"Received Target Position: {target_position}")
 
         try:
             ik_solution = self.chain.inverse_kinematics(
                 target_position,
+                target_orientation,
                 max_iter=1000,  
             )
             end_effector_position = self.chain.forward_kinematics(ik_solution)[:3, 3]

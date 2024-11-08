@@ -1,0 +1,11 @@
+target:
+  - yolo_name: "red_block"
+    synonyms: ["빨간", "빨간블럭", "빨간블록", "빨간 블록", "빨간 블럭"]
+  - yolo_name: "blue_block"
+    synonyms: ["파란", "파란블럭", "파란블록", "파란 블록", "파란 블럭"]
+
+commands:
+  - keywords: ["집어줘", "잡아줘"]
+    action: ["open", "move", "close"]
+  - keywords: ["옮겨줘", "이동시켜"]
+    action: ["open", "move", "close", "move", "open"]

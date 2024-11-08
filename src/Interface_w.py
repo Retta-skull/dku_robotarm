@@ -6,6 +6,7 @@ from gpt_api.ChatHandler import ChatThreadHandler
 from gpt_api.DataPreprocessing import ResponseParser
 from gpt_api.RobotAction import ActionExecutor, Robot
 from gpt_api.Transfersound import TextToSpeech, SpeechProcessor
+import time
 
 def main():
     # ROS 2 초기화
@@ -25,7 +26,9 @@ def main():
     while rclpy.ok():
         # 음성 인식 시작
         temp_file = sp.record_audio()
+        STTtime = time.time()
         transcription = sp.transcribe_audio(temp_file)
+        STTtime = time.time() - STTtime
         node.get_logger().info(f"Transcription: {transcription}")
 
         # 명령 메시지 정의
@@ -39,19 +42,22 @@ def main():
         {{name: \"초록블럭\", coordinates: (25, 10, 5)}}]
         """
         # GPT API에 명령 전송 및 응답 받기
+        Responsetime = time.time()
         node.get_logger().info("GPT API에 명령을 전송 중...")
         response = chat_handler.run_chat(message)
+        Responsetime = time.time() - Responsetime
         node.get_logger().info(f"GPT API 응답: {response}")
 
         # 응답 파싱
         parser = ResponseParser(response)
         parsed = parser.get_parsed_response()
+        TTStime = time.time()
         tts.speak(parsed.reply)
-
+        TTStime = time.time() - TTStime
         if not parsed or not hasattr(parsed, 'actions'):
             node.get_logger().error("파싱된 응답에 액션 데이터가 없습니다.")
             continue
-
+        print(f"SST time : {STTtime}, Response time : {Responsetime}, TTS time : {TTStime}")
         # 액션 실행기 초기화 및 실행
         executor = ActionExecutor(parsed.actions, robot)
         executor.execute_all()

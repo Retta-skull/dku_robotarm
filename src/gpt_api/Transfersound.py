@@ -65,7 +65,7 @@ class TextToSpeech:
         self.p.terminate()
 
 class SpeechProcessor:
-    def __init__(self, api_key, rate=44100, channels=1, format=pyaudio.paInt16, chunk=8192, threshold=10, silence_limit=3):
+    def __init__(self, api_key, rate=44100, channels=1, format=pyaudio.paInt16, chunk=8192, threshold=10, silence_limit=1):
         self.client = OpenAI(api_key=api_key)
         self.rate = rate
         self.channels = channels

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import re
 from dataclasses import dataclass
 from typing import List, Tuple, Optional
 
@@ -24,8 +25,13 @@ class ParsedResponse:
 
 class ResponseParser:
     def __init__(self, json_response: str):
-        self.json_response = json_response
+        # 주석을 제거한 JSON 문자열 생성
+        self.json_response = self.remove_comments(json_response)
         self.parsed_response = self.parse_response()
+
+    def remove_comments(self, json_string: str) -> str:
+        # 주석(#)으로 시작하는 부분 제거
+        return re.sub(r'#.*', '', json_string)
 
     def parse_response(self) -> ParsedResponse:
         try:

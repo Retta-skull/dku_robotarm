@@ -70,4 +70,3 @@ class ActionExecutor:
             if action.action_type == 'MOVE':
                 self.UpdatePosition()
         self.robot.node.get_logger().info("모든 명령어가 성공적으로 실행되었습니다.")
-        self.robot.move_robot([0, 20, 20])

@@ -24,13 +24,15 @@ class RobotArmController(Node):
         self.link1_2 = servo.Servo(self.pca.channels[1])       # 1번 채널: Link1_2
         self.link2_3 = servo.Servo(self.pca.channels[2])       # 2번 채널: Link2_3
         self.link3_4 = servo.Servo(self.pca.channels[3])       # 3번 채널: Link3_4
-        self.gripper = servo.Servo(self.pca.channels[6])
+        self.link4_5 = servo.Servo(self.pca.channels[4])       # 4번 채널: 손목링크
+        self.gripper = servo.Servo(self.pca.channels[6])       # 5번 채널: 그리퍼 링크
 
         
         self.base_joint.set_pulse_width_range(500, 2500)
         self.link1_2.set_pulse_width_range(500, 2500)
         self.link2_3.set_pulse_width_range(500, 2500)
         self.link3_4.set_pulse_width_range(500, 2500)
+        self.link4_5.set_pulse_width_range(500, 2500)
         self.gripper.set_pulse_width_range(500, 2500)
 
         self.init_joint_angle()
@@ -121,18 +123,6 @@ class RobotArmController(Node):
             elif joint_name == "gripper":
                 self.gripper.angle = angle
             time.sleep(delay)
-
-        # # 목표 각도에 정확히 도달하도록 마지막으로 설정
-        # if joint_name == "base_joint":
-        #     self.base_joint.angle = target_angle
-        # elif joint_name == "link1_2":
-        #     self.link1_2.angle = target_angle
-        # elif joint_name == "link2_3":
-        #     self.link2_3.angle = target_angle
-        # elif joint_name == "link3_4":
-        #     self.link3_4.angle = target_angle
-        # elif joint_name == "gripper":
-        #     self.gripper.angle = target_angle
 
     def disable_all_motors(self):
         """모든 서보 모터의 신호를 비활성화하여 힘 제거"""

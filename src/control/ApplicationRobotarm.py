@@ -133,11 +133,12 @@ class RobotArmController(Node):
                 self.link2_3.angle = angle
             elif joint_name == "link3_4":
                 self.link3_4.angle = angle
-            elif joint_name == "gripper":
-                self.gripper.angle = angle
-            elif joint_name == "carpus":
-                self.link4_5.angle = angle
             time.sleep(delay)
+        
+        if joint_name == "gripper":
+            self.gripper.angle = target_angle
+        elif joint_name == "carpus":
+            self.link4_5.angle = target_angle
 
     def disable_all_motors(self):
         """모든 서보 모터의 신호를 비활성화하여 힘 제거"""

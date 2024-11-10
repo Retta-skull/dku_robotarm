@@ -1,0 +1,4 @@
+source;share/dku_robotarm/local_setup.bash
+source;share/dku_robotarm/local_setup.dsv
+source;share/dku_robotarm/local_setup.sh
+source;share/dku_robotarm/local_setup.zsh

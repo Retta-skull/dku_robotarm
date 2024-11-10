@@ -37,9 +37,9 @@ def main():
         Order: {transcription}
         CurrentPosition: {CurrentPosition}
         Data: [
-        {{name: \"빨간블럭\", coordinates: (30, 10, 5)}},
-        {{name: \"파란블럭\", coordinates: (20, 10, 5)}}, 
-        {{name: \"초록블럭\", coordinates: (25, 10, 5)}}]
+        {{name: \"빨간블럭\", coordinates: (30, 10, 0)}},
+        {{name: \"파란블럭\", coordinates: (20, 10, 0)}}, 
+        {{name: \"초록블럭\", coordinates: (25, 10, 0)}}]
         """
         # GPT API에 명령 전송 및 응답 받기
         Responsetime = time.time()

@@ -40,11 +40,20 @@ class JointStatePublisher(Node):
             self.Gripper_callback,
             10
         )
+        self.carpus_subscription = self.create_subscription(
+            Float32MultiArray,
+            '/carpus_angle',
+            self.Carpus_callback,
+            10
+        )
         
         self.joint_subscription  # prevent unused variable warning
         self.gripper_subscription
+        self.carpus_subscription
         self.get_logger().info("'/joint_angles' 토픽에 대한 구독자가 생성되었습니다.")
         self.get_logger().info("'/gripper_angle' 토픽에 대한 구독자가 생성되었습니다.")
+        self.get_logger().info("'/carpus_angle' 토픽에 대한 구독자가 생성되었습니다.")
+
 
         # 퍼블리시 타이머 설정 (0.1초 간격)
         self.timer = self.create_timer(0.1, self.publish_joint_state)
@@ -75,6 +84,13 @@ class JointStatePublisher(Node):
             )
         else:
             self.get_logger().error(f"Invalid data length: expected 1, got {len(msg.data)}")
+
+    def Carpus_callback(self, msg):
+        if len(msg.data) == 1:
+            self.link4_link5 = msg.data[0]
+            self.get_logger().info(
+                f"Received radians: carpus_angle={math.radians(self.link4_link5):.3f} "
+            )
 
     def publish_joint_state(self):
         joint_state = JointState()

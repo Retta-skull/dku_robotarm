@@ -3,11 +3,13 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
 import threading
+import math
 
 class Move(Node):
     def __init__(self):
         super().__init__('xyz_publisher')
         self.publisher = self.create_publisher(Float32MultiArray, '/target_position', 10)
+        self.carpus_publisher = self.create_publisher(Float32MultiArray, '/carpus_angle', 10)
         self.get_logger().info("Move 노드가 초기화되었으며 목표 위치를 퍼블리시할 준비가 되었습니다.")
         self.move_xyz([0, 20, 20])
 
@@ -24,6 +26,17 @@ class Move(Node):
             self.get_logger().error(f"Move에 잘못된 입력: {e}")
         except Exception as e:
             self.get_logger().error(f"Move에서 예상치 못한 오류 발생: {e}")
+
+    def set_carpus(self, xyz):
+        x, y, z = xyz
+        try:
+            msg = Float32MultiArray()
+            theta_xy = math.atan2(y, x)  # 라디안 단위로 반환됨
+            msg.data = [math.degrees(theta_xy)+90]  # 라디안을 각도로 변환
+            self.carpus_publisher.publish(msg)
+            self.get_logger().info(f"손목 각도 설정: XY 평면 각도={math.degrees(theta_xy):.2f}°")
+        except Exception as e:
+            self.get_logger().error(f"손목 각도 설정 중 오류 발생: {e}")
 
 class Gripper(Node):
     def __init__(self):
@@ -53,7 +66,7 @@ class Gripper(Node):
             self.get_logger().info("그리퍼 열기")
         except Exception as e:
             self.get_logger().error(f"그리퍼 오류 : {e}")
-    
+
     def gripper_close(self):
         try:
             msg = Float32MultiArray()
@@ -91,6 +104,7 @@ class Interface(Node):
                     try:
                         x, y, z = map(float, parts[1:4])
                         self.move_node.move_xyz([x, y, z])
+                        self.move_node.set_carpus([x, y, z])
                     except ValueError:
                         self.get_logger().error("Move 명령은 세 개의 숫자 값을 필요로 합니다.")
                 elif user_input == "close":

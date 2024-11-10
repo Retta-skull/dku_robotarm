@@ -24,13 +24,15 @@ class RobotArmController(Node):
         self.link1_2 = servo.Servo(self.pca.channels[1])       # 1번 채널: Link1_2
         self.link2_3 = servo.Servo(self.pca.channels[2])       # 2번 채널: Link2_3
         self.link3_4 = servo.Servo(self.pca.channels[3])       # 3번 채널: Link3_4
-        self.gripper = servo.Servo(self.pca.channels[6])
+        self.link4_5 = servo.Servo(self.pca.channels[4])       # 4번 채널: 손목링크
+        self.gripper = servo.Servo(self.pca.channels[6])       # 5번 채널: 그리퍼 링크
 
         
         self.base_joint.set_pulse_width_range(500, 2500)
         self.link1_2.set_pulse_width_range(500, 2500)
         self.link2_3.set_pulse_width_range(500, 2500)
         self.link3_4.set_pulse_width_range(500, 2500)
+        self.link4_5.set_pulse_width_range(500, 2500)
         self.gripper.set_pulse_width_range(500, 2500)
 
         self.init_joint_angle()
@@ -51,6 +53,13 @@ class RobotArmController(Node):
             10
         )
 
+        # /gripper_angle 토픽 구독
+        self.carpus_angle_subscription = self.create_subscription(
+            Float32MultiArray,
+            '/carpus_angle',
+            self.Carpus_callback,
+            10
+        )
 
     def Move_callback(self, msg):
         """ /joint_angles 토픽에서 받은 각도 값으로 서보 모터 제어 """
@@ -75,17 +84,21 @@ class RobotArmController(Node):
             self.get_logger().warn("Received joint angles message has insufficient data.")
 
     def Gripper_callback(self, msg):
-        print("grip")
         angle = msg.data
         self.set_joint_angle("gripper", angle[0])
         self.get_logger().info(f"Received gripper angles: {angle[0]}")
 
+    def Carpus_callback(self, msg):
+        angle = msg.data
+        self.set_joint_angle("capus", angle[0])
+        self.get_logger().info(f"Received carpus angles: {angle[0]}")
 
     def init_joint_angle(self):
         self.base_joint.angle = self.convert_angle(2.03)
         self.link1_2.angle = 180 - self.convert_angle(-28.84)
         self.link2_3.angle = self.convert_angle(79.44)
         self.link3_4.angle = self.convert_angle(81.58)
+        self.link4_5.angle = 0
         self.gripper.angle = 180
 
     def convert_angle(self, angle):
@@ -104,6 +117,8 @@ class RobotArmController(Node):
             current_angle = self.link3_4.angle
         elif joint_name == "gripper":
             current_angle = self.gripper.angle
+        elif joint_name == "carpus":
+            current_angle = self.link4_5.angle
         else:
             self.get_logger().warn(f"'{joint_name}'는 유효한 관절 이름이 아닙니다.")
             return
@@ -118,21 +133,12 @@ class RobotArmController(Node):
                 self.link2_3.angle = angle
             elif joint_name == "link3_4":
                 self.link3_4.angle = angle
-            elif joint_name == "gripper":
-                self.gripper.angle = angle
             time.sleep(delay)
-
-        # # 목표 각도에 정확히 도달하도록 마지막으로 설정
-        # if joint_name == "base_joint":
-        #     self.base_joint.angle = target_angle
-        # elif joint_name == "link1_2":
-        #     self.link1_2.angle = target_angle
-        # elif joint_name == "link2_3":
-        #     self.link2_3.angle = target_angle
-        # elif joint_name == "link3_4":
-        #     self.link3_4.angle = target_angle
-        # elif joint_name == "gripper":
-        #     self.gripper.angle = target_angle
+        
+        if joint_name == "gripper":
+            self.gripper.angle = target_angle
+        elif joint_name == "carpus":
+            self.link4_5.angle = target_angle
 
     def disable_all_motors(self):
         """모든 서보 모터의 신호를 비활성화하여 힘 제거"""

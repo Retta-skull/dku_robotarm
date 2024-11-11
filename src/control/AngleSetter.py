@@ -43,6 +43,7 @@ class AngleSetter(Node):
         if x > 0 and x < 10:
             pass
         elif x >= 10 and x < 20:
+            x = x - 1
             y = y + 1
         elif x >= 20:
             x = x - 1

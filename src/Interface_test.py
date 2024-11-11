@@ -11,7 +11,7 @@ class Move(Node):
         self.publisher = self.create_publisher(Float32MultiArray, '/target_position', 10)
         self.carpus_publisher = self.create_publisher(Float32MultiArray, '/carpus_angle', 10)
         self.get_logger().info("Move 노드가 초기화되었으며 목표 위치를 퍼블리시할 준비가 되었습니다.")
-        self.move_xyz([0, 20, 20])
+        self.move_xyz([0, 18, 20])
 
     def move_xyz(self, xyz):
         try:

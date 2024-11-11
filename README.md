@@ -102,13 +102,13 @@ source install/setup.bash
 ### RobotArm 실행하기
 제공된 런치 파일을 사용하여 모든 필요한 노드를 시작하고 RViz에서 로봇을 시각화합니다.
 
-![image](https://github.com/user-attachments/assets/e7598bf1-5011-4c1d-951b-e351d2129294)
-
 ```bash
 ros2 launch dku_robotarm display_launch.py
 ros2 launch dku_robotarm control_launch.py
 ros2 run dku_robotarm Interface.py
 ```
+
+![image](https://github.com/user-attachments/assets/e7598bf1-5011-4c1d-951b-e351d2129294)
 
 ## 구성
 

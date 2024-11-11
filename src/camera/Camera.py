@@ -48,7 +48,7 @@ class YOLODetector(Node):
                         "label": label,
                         "x": round(center_x_cm,2),
                         "y": round(center_y_cm,2),
-                        "z": 1.25
+                        "z": 0
                     }
                     detection_data.append(detection_item)
 

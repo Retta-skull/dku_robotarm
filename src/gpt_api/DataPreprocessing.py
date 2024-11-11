@@ -30,8 +30,10 @@ class ResponseParser:
         self.parsed_response = self.parse_response()
 
     def remove_comments(self, json_string: str) -> str:
-        # 주석(#)으로 시작하는 부분 제거
-        return re.sub(r'#.*', '', json_string)
+        # 주석(# 또는 //)으로 시작하는 부분 제거
+        json_string = re.sub(r'#.*', '', json_string)  # # 주석 제거
+        json_string = re.sub(r'//.*', '', json_string) # // 주석 제거
+        return json_string
 
     def parse_response(self) -> ParsedResponse:
         try:

@@ -32,7 +32,12 @@ class Move(Node):
         try:
             msg = Float32MultiArray()
             theta_xy = math.atan2(y, x)  # 라디안 단위로 반환됨
-            msg.data = [math.degrees(theta_xy)+90]  # 라디안을 각도로 변환
+            # if x >= 0:
+            #     msg.data = [math.degrees(theta_xy)]  # 라디안을 각도로 변환
+            # elif x < 0:
+            #     msg.data = [math.degrees(theta_xy) - 90]
+            msg.data = [math.degrees(theta_xy)]
+            print(msg)
             self.carpus_publisher.publish(msg)
             self.get_logger().info(f"손목 각도 설정: XY 평면 각도={math.degrees(theta_xy):.2f}°")
         except Exception as e:
@@ -103,8 +108,8 @@ class Interface(Node):
                         continue
                     try:
                         x, y, z = map(float, parts[1:4])
-                        self.move_node.move_xyz([x, y, z])
                         self.move_node.set_carpus([x, y, z])
+                        self.move_node.move_xyz([x, y, z])
                     except ValueError:
                         self.get_logger().error("Move 명령은 세 개의 숫자 값을 필요로 합니다.")
                 elif user_input == "close":

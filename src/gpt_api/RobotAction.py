@@ -15,7 +15,8 @@ class Robot:
         self.carpus_publisher = self.node.create_publisher(Float32MultiArray, '/carpus_angle', 10)
         self.node.get_logger().info("로봇 제어 퍼블리셔 초기화 완료.")
         self.CurrentPosition = []
-        self.move_robot([0, 20, 20])
+        self.move_robot([0, 18, 20])
+        self.set_carpus([0, 18, 20])
 
     def move_robot(self, coordinates):
         if len(coordinates) != 3:
@@ -32,7 +33,11 @@ class Robot:
         try:
             msg = Float32MultiArray()
             theta_xy = math.atan2(y, x)  # 라디안 단위로 반환됨
-            msg.data = [math.degrees(theta_xy)+90]  # 라디안을 각도로 변환
+            # if x >= 0:
+            #     msg.data = [math.degrees(theta_xy) + 90]  # 라디안을 각도로 변환
+            # elif x < 0:
+            #     msg.data = [math.degrees(theta_xy) - 90]
+            msg.data = [math.degrees(theta_xy)]
             self.carpus_publisher.publish(msg)
             self.node.get_logger().info(f"손목 각도 설정: XY 평면 각도={math.degrees(theta_xy):.2f}°")
         except Exception as e:
@@ -57,8 +62,9 @@ class Action:
 
     def execute(self, robot: Robot):
         if self.action_type == 'MOVE':
-            robot.move_robot(self.parameters)
             robot.set_carpus(self.parameters)
+            time.sleep(1)
+            robot.move_robot(self.parameters)
         elif self.action_type == 'OPEN_GRIPPER':
             robot.open_gripper()
         elif self.action_type == 'CLOSE_GRIPPER':
@@ -80,7 +86,7 @@ class ActionExecutor:
             action = Action(action_data.action_type, action_data.parameters)
             self.robot.node.get_logger().info(f"--- {idx}번째 명령어: {action.action_type} ---")
             action.execute(self.robot)
-            time.sleep(1)
+            time.sleep(2)
             if action.action_type == 'MOVE':
                 self.UpdatePosition()
         self.robot.node.get_logger().info("모든 명령어가 성공적으로 실행되었습니다.")

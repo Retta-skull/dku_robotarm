@@ -71,17 +71,17 @@ class MarkArrayPublisher(Node):
                 marker.scale.z = 0.2
 
                 # 레이블에 따라 색상 설정
-                if label == "red-cube":
+                if label == "red block":
                     marker.color.r = 1.0
                     marker.color.g = 0.0
                     marker.color.b = 0.0
                     marker.color.a = 1.0
-                elif label == "yellow-cube":
+                elif label == "yellow block":
                     marker.color.r = 1.0
                     marker.color.g = 1.0
                     marker.color.b = 0.0
                     marker.color.a = 1.0
-                elif label == "blue-cube":
+                elif label == "blue block":
                     marker.color.r = 0.0
                     marker.color.g = 0.0
                     marker.color.b = 1.0

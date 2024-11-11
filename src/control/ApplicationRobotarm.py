@@ -67,14 +67,14 @@ class RobotArmController(Node):
 
         if len(angles) >= 4:
             # 각각의 모터에 각도를 설정 (변환 적용)
-            if (180 - self.convert_angle(angles[1])) < 0: #내려갈때
+            if (180 - self.convert_angle(angles[1])) < 90: #내려갈때
                 self.set_joint_angle("base_joint", self.convert_angle(angles[0]))
                 self.set_joint_angle("link3_4", self.convert_angle(angles[3]))
                 self.set_joint_angle("link2_3", self.convert_angle(angles[2]))
                 self.set_joint_angle("link1_2", 180 - self.convert_angle(angles[1]))
                 self.get_logger().info(f"Received joint angles: {self.convert_angle(angles[0]),180 - self.convert_angle(angles[1]), self.convert_angle(angles[2]), self.convert_angle(angles[3])}")
                 
-            elif (180 - self.convert_angle(angles[1])) >= 0: #올라갈때
+            elif (180 - self.convert_angle(angles[1])) >= 90: #올라갈때
                 self.set_joint_angle("link1_2", 180 - self.convert_angle(angles[1]))
                 self.set_joint_angle("link2_3", self.convert_angle(angles[2]))
                 self.set_joint_angle("link3_4", self.convert_angle(angles[3]))
@@ -90,15 +90,15 @@ class RobotArmController(Node):
 
     def Carpus_callback(self, msg):
         angle = msg.data
-        self.set_joint_angle("capus", angle[0])
+        self.set_joint_angle("carpus", angle[0])
         self.get_logger().info(f"Received carpus angles: {angle[0]}")
 
     def init_joint_angle(self):
         self.base_joint.angle = self.convert_angle(2.03)
-        self.link1_2.angle = 180 - self.convert_angle(-28.84)
+        self.link1_2.angle = 180 - self.convert_angle(-28.84 - 10)
         self.link2_3.angle = self.convert_angle(79.44)
         self.link3_4.angle = self.convert_angle(81.58)
-        self.link4_5.angle = 0
+        self.link4_5.angle = 90
         self.gripper.angle = 180
 
     def convert_angle(self, angle):

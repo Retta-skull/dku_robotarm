@@ -39,6 +39,20 @@ class AngleSetter(Node):
             return
 
         x, y, z = msg.data
+
+        if x > 0 and x < 10:
+            pass
+        elif x >= 10 and x < 20:
+            y = y + 1
+        elif x >= 20:
+            x = x - 1
+            y = y + 2
+        elif x < 0 and x > -10:
+            pass
+        elif x <= -10 and x > -20:
+            x = x - 1
+        elif x <= -20:
+            x = x - 2
         target_position = [x / 10.0, y / 10.0, z / 10.0]  # 단위 변환 (예: mm -> cm)
         target_orientation = [0, -90, 0]
         self.get_logger().info(f"Received Target Position: {target_position}")

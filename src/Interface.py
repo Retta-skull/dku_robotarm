@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
+
 import rclpy
+import json
+import threading
 from rclpy.node import Node
 from std_msgs.msg import String
 from config import ASSISTANT_ID, API_KEY
@@ -17,48 +20,66 @@ class RobotController(Node):
         self.chat_handler = ChatThreadHandler(assistant_id=ASSISTANT_ID, api_key=API_KEY)
         self.tts = TextToSpeech(API_KEY)
         self.sp = SpeechProcessor(API_KEY)
-        self.CurrentPosition = [0, 20, 20]
+        self.CurrentPosition = [0, 18, 20]
 
         # YOLODetector에서 퍼블리시한 detection_data 구독
         self.create_subscription(String, 'detection_data', self.handle_detection_data, 10)
         self.detection_data = ""  # 최신 데이터만 유지
 
-        # Timer 설정: 2초마다 main_loop 작업 실행
-        self.timer = self.create_timer(5.0, self.main_loop)
+        # 메인 루프를 별도의 스레드로 실행
+        self.loop_thread = threading.Thread(target=self.main_loop)
+        self.loop_thread.start()
 
     def handle_detection_data(self, msg):
         # 수신한 탐지 데이터를 최신 데이터로 갱신
         self.detection_data = msg.data
-        self.get_logger().info(f"Detection Data: {msg.data}")
+        # self.get_logger().info(f"Detection Data: {msg.data}")
+        if isinstance(self.detection_data, str):
+            self.detection_data = json.loads(self.detection_data)
 
     def main_loop(self):
-        temp_file = self.sp.record_audio()
-        transcription = self.sp.transcribe_audio(temp_file)
-        self.get_logger().info(f"Transcription: {transcription}")
+        while rclpy.ok():
+            temp_file = self.sp.record_audio()
+            transcription = self.sp.transcribe_audio(temp_file)
+            self.get_logger().info(f"Transcription: {transcription}")
 
-        # 명령 메시지 생성 및 GPT API 전송
-        message = f"""Order: {transcription}
-                    CurrentPosition: {self.CurrentPosition}
-                    Data: {self.detection_data}"""
-        response = self.chat_handler.run_chat(message)
-        self.get_logger().info(f"GPT API 응답: {response}")
+            data_string = ""
+            for block in self.detection_data:
+                if isinstance(block, dict):  # 딕셔너리인지 확인
+                    name = block.get("label", "unknown")
+                    coordinates = [block.get("x", 0), block.get("y", 0), block.get("z", 0)]
+                    data_string += f"\n -name: \"{name}\"\n coordinates: {coordinates}\n"
+                else:
+                    self.get_logger().error("오류: 예상한 데이터 형식이 아닙니다.", block)
 
-        # 응답을 파싱하여 액션 실행
-        parser = ResponseParser(response)
-        parsed = parser.get_parsed_response()
-        self.tts.speak(parsed.reply)
+            message = f"Order: {transcription} CurrentPosition: {self.CurrentPosition} Data: {data_string}"
+            response = self.chat_handler.run_chat(message)
+            self.get_logger().info(f"GPT API 응답: {response}")
 
-        if parsed and hasattr(parsed, 'actions'):
-            executor = ActionExecutor(parsed.actions, self.robot)
-            self.CurrentPosition = executor.UpdatePosition()
-            executor.execute_all()
+            # 응답을 파싱하여 액션 실행
+            parser = ResponseParser(response)
+            parsed = parser.get_parsed_response()
+            self.tts.speak(parsed.reply)
+
+            if parsed and hasattr(parsed, 'actions'):
+                executor = ActionExecutor(parsed.actions, self.robot)
+                executor.execute_all()
+                self.CurrentPosition = executor.UpdatePosition()
+
+            # 루프마다 5초 대기
+            threading.Event().wait(1)
 
 def main():
     rclpy.init()
     robot_controller = RobotController()
-    rclpy.spin(robot_controller)  # 콜백을 비동기적으로 계속 수신
-    robot_controller.destroy_node()
-    rclpy.shutdown()
+    
+    try:
+        rclpy.spin(robot_controller)  # ROS 콜백 비동기 실행
+    except KeyboardInterrupt:
+        robot_controller.get_logger().info("RobotController node interrupted by user.")
+    finally:
+        robot_controller.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == "__main__":
     main()

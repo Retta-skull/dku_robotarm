@@ -108,7 +108,8 @@ ros2 launch dku_robotarm control_launch.py
 ros2 run dku_robotarm Interface.py
 ```
 
-![image](https://github.com/user-attachments/assets/e7598bf1-5011-4c1d-951b-e351d2129294)
+![image](https://github.com/user-attachments/assets/8818d1a9-366c-4d31-9cab-e2768513642d)
+
 
 ## 구성
 

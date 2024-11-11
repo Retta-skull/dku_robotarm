@@ -1,5 +1,7 @@
 # RobotArm ROS2 패키지
 
+![image](https://github.com/user-attachments/assets/e7598bf1-5011-4c1d-951b-e351d2129294)
+
 ## 목차
 
 - [소개](#소개)

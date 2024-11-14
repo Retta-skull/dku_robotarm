@@ -25,7 +25,7 @@ class RobotArmController(Node):
         self.link2_3 = servo.Servo(self.pca.channels[2])       # 2번 채널: Link2_3
         self.link3_4 = servo.Servo(self.pca.channels[3])       # 3번 채널: Link3_4
         self.link4_5 = servo.Servo(self.pca.channels[4])       # 4번 채널: 손목링크
-        self.gripper = servo.Servo(self.pca.channels[6])       # 5번 채널: 그리퍼 링크
+        self.gripper = servo.Servo(self.pca.channels[7])       # 5번 채널: 그리퍼 링크
 
         
         self.base_joint.set_pulse_width_range(500, 2500)
@@ -105,7 +105,7 @@ class RobotArmController(Node):
         """-90 ~ 90 범위의 각도를 0 ~ 180도로 변환"""
         return (angle + 90)
 
-    def set_joint_angle(self, joint_name, target_angle, step=1, delay=0.01):
+    def set_joint_angle(self, joint_name, target_angle, step=1, delay=0.008):
         # 현재 각도를 읽어옵니다.
         if joint_name == "base_joint":
             current_angle = self.base_joint.angle
@@ -144,7 +144,6 @@ class RobotArmController(Node):
         """모든 서보 모터의 신호를 비활성화하여 힘 제거"""
         for i in range(8):
             self.pca.channels[i].duty_cycle = 0
-
     def cleanup(self):
         """PWM 드라이버 해제 및 모터 신호 비활성화"""
         self.disable_all_motors()

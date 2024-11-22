@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-
 import json
 import os
 import openai
 import time
 
 class ChatThreadHandler:
-    def __init__(self, assistant_id, api_key='OPENAI_API_KEY'):
+    def __init__(self, assistant_id, api_key='OPENAI_API_KEY', logger=None):
         self.api_key = api_key or os.getenv('OPENAI_API_KEY')
         if not self.api_key:
             raise ValueError("API 키는 인자로 제공되거나 OPENAI_API_KEY 환경 변수에 설정되어야 합니다.")
@@ -15,12 +14,13 @@ class ChatThreadHandler:
         self.assistant_id = assistant_id
         self.thread_id = None
         self.run = None
+        self.logger = logger
         self.create_new_thread()
         
     def create_new_thread(self):
         thread = openai.beta.threads.create()
         self.thread_id = thread.id
-        print(f"새로운 스레드가 생성되었습니다. 스레드 ID: {self.thread_id}")
+        self.logger.info(f"새로운 스레드가 생성되었습니다. 스레드 ID: {self.thread_id}")
         return thread
 
     def submit_message(self, user_message):
@@ -32,28 +32,28 @@ class ChatThreadHandler:
             role='user',
             content=user_message
         )
-        print(f"스레드 {self.thread_id}에 메시지를 제출했습니다: {user_message}")
+        self.logger.info(f"스레드 {self.thread_id}에 메시지를 제출했습니다: \n{user_message}")
         
         self.run = openai.beta.threads.runs.create(
             thread_id=self.thread_id,
             assistant_id=self.assistant_id
         )
-        print(f"실행이 시작되었습니다. 실행 ID: {self.run.id}")
+        self.logger.info(f"실행이 시작되었습니다. 실행 ID: {self.run.id}")
         return self.run
 
     def wait_on_run(self, poll_interval=0.5):
         if not self.run:
             raise RuntimeError("실행이 시작되지 않았습니다. 먼저 submit_message()를 호출하세요.")
         
-        print("실행이 완료될 때까지 기다리는 중...")
+        self.logger.info("실행이 완료될 때까지 기다리는 중...")
         while self.run.status in ["queued", "in_progress"]:
-            print(f"현재 실행 상태: {self.run.status}")
+            self.logger.info(f"현재 실행 상태: {self.run.status}")
             time.sleep(poll_interval)
             self.run = openai.beta.threads.runs.retrieve(
                 thread_id=self.thread_id,
                 run_id=self.run.id
             )
-        print(f"실행이 완료되었습니다. 상태: {self.run.status}")
+        self.logger.info(f"실행이 완료되었습니다. 상태: {self.run.status}")
         return self.run
 
     def get_response(self):
@@ -65,14 +65,14 @@ class ChatThreadHandler:
             raise ValueError("어시스턴트로부터의 응답이 아직 없습니다.")
         
         response = messages.data[-1]  # 마지막 메시지가 어시스턴트의 응답이라고 가정
-        print("응답을 받았습니다")
+        self.logger.info("응답을 받았습니다")
         return response
 
     def print_message(self, response):
-        print(f"[응답]\n{response.content[0].text.value}\n")
+        self.logger.info(f"[응답]\n{response.content[0].text.value}\n")
 
     def show_json(self, obj):
-        print(json.dumps(obj.model_dump(), ensure_ascii=False, indent=2))
+        self.logger.info(json.dumps(obj.model_dump(), ensure_ascii=False, indent=2))
 
     def run_chat(self, user_message):
         self.submit_message(user_message)

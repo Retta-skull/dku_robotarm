@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import cv2
+from cv_bridge import CvBridge
 import numpy as np
 import logging
 from ultralytics import YOLO
@@ -7,6 +8,7 @@ import rclpy
 import json
 from rclpy.node import Node
 from std_msgs.msg import String
+from sensor_msgs.msg import Image
 
 
 logging.getLogger('ultralytics').setLevel(logging.WARNING)
@@ -19,8 +21,9 @@ class YOLODetector(Node):
         self.offset_y = offset_y
         self.scale_factor = scale_factor
         self.frame = None  # 현재 프레임을 저장할 변수
-
-        self.publisher = self.create_publisher(String, 'detection_data', 10)
+        self.bridge = CvBridge()
+        self.string_publisher = self.create_publisher(String, 'detection_data', 10)
+        self.image_publisher = self.create_publisher(Image, 'detection_image', 10)
 
     def process_frame(self, frame):
         results = self.model(frame)
@@ -58,7 +61,7 @@ class YOLODetector(Node):
             if detection_data: #데이터 전송
                 message = String()
                 message.data = json.dumps(detection_data)  # JSON 문자열로 인코딩
-                self.publisher.publish(message)
+                self.string_publisher.publish(message)
 
         return frame
 
@@ -88,7 +91,7 @@ class YOLODetector(Node):
             print("카메라를 열 수 없습니다.")
             return
 
-        cv2.namedWindow("YOLO Detection")
+        # cv2.namedWindow("YOLO Detection")
         # cv2.setMouseCallback("YOLO Detection", self.show_coordinates)
 
         while True:
@@ -102,14 +105,17 @@ class YOLODetector(Node):
 
             # 프레임을 처리하여 객체 탐지 결과 표시
             frame = self.process_frame(frame)
-            cv2.imshow("YOLO Detection", frame)
+            image_message = self.bridge.cv2_to_imgmsg(frame, encoding="bgr8")
+            self.image_publisher.publish(image_message)
 
-            # 'q' 키를 누르면 종료
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # cv2.imshow("YOLO Detecction", frame)
+
+            # # 'q' 키를 누르면 종료
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
 
         capture.release()
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ class RobotController(Node):
         
         # 퍼블리셔 및 GPT 관련 초기화
         self.robot = Robot(self)
-        self.chat_handler = ChatThreadHandler(assistant_id=ASSISTANT_ID, api_key=API_KEY)
+        self.chat_handler = ChatThreadHandler(assistant_id=ASSISTANT_ID, api_key=API_KEY, logger=self.get_logger())
         self.tts = TextToSpeech(API_KEY)
         self.sp = SpeechProcessor(API_KEY)
         self.CurrentPosition = [0, 18, 20]
@@ -52,7 +52,7 @@ class RobotController(Node):
                 else:
                     self.get_logger().error("오류: 예상한 데이터 형식이 아닙니다.", block)
 
-            message = f"Order: {transcription} CurrentPosition: {self.CurrentPosition} Data: {data_string}"
+            message = f"Order: {transcription}\n CurrentPosition: {self.CurrentPosition} \nData: {data_string}"
             response = self.chat_handler.run_chat(message)
             self.get_logger().info(f"GPT API 응답: {response}")
 

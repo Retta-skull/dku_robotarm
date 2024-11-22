@@ -30,6 +30,10 @@ file(GLOB API_SCRIPTS
   "src/gpt_api/*.py"
 )
 
+file(GLOB GUI_SCRIPTS
+  "src/Interface_gui/*.py"
+)
+
 
 install(PROGRAMS
   ${PY_SCRIPTS}
@@ -40,7 +44,10 @@ install(PROGRAMS
   ${API_SCRIPTS}
   DESTINATION lib/${PROJECT_NAME}/gpt_api
 )
-
+install(PROGRAMS
+  ${GUI_SCRIPTS}
+  DESTINATION lib/${PROJECT_NAME}/Interface_gui
+)
 install(
   DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}/

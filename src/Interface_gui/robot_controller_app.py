@@ -25,7 +25,7 @@ class RobotControllerApp(QMainWindow):
         self.left_image_label.setAlignment(Qt.AlignCenter)
         self.left_image_label.setFixedSize(480, 720)
 
-        fixed_image_path = "/home/retta/ros2_ws/src/dku_robotarm/src/Interface_gui/image/resized_image.png"
+        fixed_image_path = "/home/retta/ros2_ws/src/dku_robotarm/src/Interface_gui/image/image.jpg"
         fixed_pixmap = QPixmap(fixed_image_path)
         self.left_image_label.setPixmap(fixed_pixmap.scaled(self.left_image_label.size(), Qt.KeepAspectRatio))
 
